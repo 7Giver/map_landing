@@ -15,14 +15,14 @@
             <div class="left">
                 <div class="title">
                     <p class="main">装修计算器</p>
-                    <p class="off">今天已有<span>{{1396}}</span>位业主获取了装修预算</p>
+                    <p class="off">今天已有<span>{{visits}}</span>位业主获取了装修预算</p>
                 </div>
                 <div class="form_block">
                     <div class="item">
                         <div class="label">所在城市</div>
                         <div class="select_block">
                             <div :class="{warn: noAreas}">
-                                <select v-model="areaSelected" @change="onChange" required>
+                                <select v-model="areaSelected" @change="areaChange" required>
                                     <!-- <option value="" selected>省/市</option> -->
                                     <option v-for="(item, index) in areaList" :value="item.province" :key="index">
                                         {{item.province}}
@@ -31,7 +31,7 @@
                                 <div v-if="noAreas" class="warning">请选择所在地</div>
                             </div>
                             <div :class="{warn: noCity}">
-                                <select v-model="citySelected" @change="onChange2" required>
+                                <select v-model="citySelected" @change="cityChange" required>
                                     <!-- <option value="" selected>市/区</option> -->
                                     <option v-for="(item, index) in checkList" :value="item" :key="index">
                                         {{item}}
@@ -44,14 +44,14 @@
                     <div class="item">
                         <div class="label">房屋面积</div>
                         <div :class="[noArea ? 'input_block area warn' : 'input_block area']">
-                            <input type="number" v-model="guest.area" placeholder="请输入建筑面积">
+                            <input type="tel" v-model="guest.area" @focus="getfocus('area')" maxlength="4" placeholder="请输入建筑面积">
                             <div v-if="noArea" class="warning">请填写房屋面积</div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="label">装修风格</div>
                         <div :class="[noStyle ? 'input_block warn' : 'input_block']">
-                            <select v-model="styleSelected" required>
+                            <select v-model="styleSelected" @change="styleChange" required>
                                 <option value="" selected>请选择装修风格</option>
                                 <option>现代简约风</option>
                                 <option>田园风格</option>
@@ -77,7 +77,8 @@
                     <div class="item">
                         <div class="label">手机号码</div>
                         <div :class="[noMobile || realMobile ? 'input_block warn' : 'input_block']">
-                            <input type="tel" v-model="guest.mobile" maxlength="11" placeholder="请输入获取报价的真实号码">
+                            <input type="tel" v-model="guest.mobile" maxlength="11" @focus="getfocus('mobile')"
+                                placeholder="请输入获取报价的真实号码">
                             <div v-if="noMobile" class="warning">请填写手机号码</div>
                             <div v-if="realMobile" class="warning">请填写正确的手机号</div>
                         </div>
@@ -85,7 +86,7 @@
                     <div class="item">
                         <div class="label">您的姓名</div>
                         <div :class="[noName ? 'input_block warn' : 'input_block']">
-                            <input type="text" v-model="guest.name" placeholder="请输入您的真实姓名">
+                            <input type="text" v-model="guest.name" @focus="getfocus('name')" placeholder="请输入您的真实姓名">
                             <div v-if="noName" class="warning">请填写真实姓名</div>
                         </div>
                     </div>
@@ -145,6 +146,7 @@
             areaSelected: '', //选择的省级
             citySelected: '', //选择的市级
             styleSelected: '', //选择的装修风格
+            visits: 1386, // 访问量
             material_cost: 0, //材料费
             labour_cost: 0, //人工费
             design_cost: 0, //设计费
@@ -162,17 +164,14 @@
             message: 'Hello Vue!'
         },
         mounted() {
-            // console.log('ready')
-            // this.areaSelected = '省/市';
-            // this.citySelected = '市/区';
             var myRandom = setInterval(() => {
                 this.startRandom()
             }, 300)
+            this.getVisits()
             this.getAreaList()
         },
         beforeDestroy() {
             clearInterval(myRandom)
-            console.log('destroy')
         },
         methods: {
             // 获取省市
@@ -192,15 +191,35 @@
                     }
                 })
             },
+            // 获取访问量
+            getVisits() {
+                let value = Number(localStorage.getItem('visits'))
+                if (value) {
+                    this.visits = value + 1
+                    localStorage.setItem("visits", this.visits)
+                } else {
+                    localStorage.setItem("visits", this.visits)
+                }
+            },
             // 省级下拉监听
-            onChange(e) {
-                console.log(e.target.value)
+            areaChange(e) {
+                // console.log(e.target.value)
+                this.noAreas = false
                 let value = e.target.value
                 let index = this.areaList.findIndex(item => item.province == value)
                 let result = this.cityList.filter((v, i) => i == index)
                 result.unshift('--')
                 this.checkList = result.flat()
                 this.citySelected = this.checkList[0]
+            },
+            // 市级下拉监听
+            cityChange(e) {
+                // console.log(e.target.value)
+                this.noCity = false
+            },
+            // 装修风格监听
+            styleChange() {
+                this.noStyle = false
             },
             // 随机数
             startRandom() {
@@ -216,9 +235,20 @@
                     return Number((start + differ * random).toFixed(fixed))
                 }
             },
-            // 市级下拉监听
-            onChange2(e) {
-                console.log(e.target.value)
+            // 获取焦点
+            getfocus(type) {
+                switch (type) {
+                    case 'area':
+                        this.noArea = false
+                        break;
+                    case 'mobile':
+                        this.noMobile = false
+                        this.realMobile = false
+                        break;
+                    case 'name':
+                        this.noName = false
+                        break;
+                }
             },
             // 弹窗取消
             cancel() {
@@ -293,7 +323,7 @@
                         this.showDialog = true
                     },
                     error: (errore) => {
-                        console.log(errore);
+                        // console.log(errore);
                     }
                 });
             }
