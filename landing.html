@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <div class="container">
             <div class="left">
                 <div class="title">
@@ -92,12 +92,12 @@
                 </div>
             </div>
             <div class="right">
-                <div class="title">您家的装修预算<span>{{total_cost}}</span>元</div>
+                <div class="title">您家的装修预算<span>{{total_cost || '?'}}</span>元</div>
                 <div class="content">
-                    <p>材料费:<span>{{material_cost}}</span>元</p>
-                    <p>人工费:<span>{{labour_cost}}</span>元</p>
-                    <p>设计费:<span>{{design_cost}}</span>元</p>
-                    <p>质检费:<span>{{quality_cost}}</span>元</p>
+                    <p>材料费:<span>{{material_cost || '?'}}</span>元</p>
+                    <p>人工费:<span>{{labour_cost || '?'}}</span>元</p>
+                    <p>设计费:<span>{{design_cost || '?'}}</span>元</p>
+                    <p>质检费:<span>{{quality_cost || '?'}}</span>元</p>
                 </div>
             </div>
             <div class="submit_block danger">
@@ -133,7 +133,7 @@
 
 <!-- <script src="/landing_static/js/vue.js"></script> -->
 <script src="/landing_static/js/vue.min.js"></script>
-<script src="http://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="/landing_static/js/jQuery.js"></script>
 <script>
     var app = new Vue({
         el: '#app',
