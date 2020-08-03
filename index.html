@@ -21,40 +21,44 @@
                     <div class="item">
                         <div class="label">所在城市</div>
                         <div class="select_block">
-                            <div>
-                                <select name="" v-model="areaSelected" @change="onChange($event)" required>
-                                    <option value="" selected>省/市</option>
+                            <div :class="{warn: noAreas}">
+                                <select v-model="areaSelected" @change="onChange" required>
+                                    <!-- <option value="" selected>省/市</option> -->
                                     <option v-for="(item, index) in areaList" :value="item.province" :key="index">
                                         {{item.province}}
                                     </option>
                                 </select>
+                                <div v-if="noAreas" class="warning">请选择所在地</div>
                             </div>
-                            <div>
-                                <select name="" v-model="citySelected" @change="onChange2($event)" required>
-                                    <option value="" selected>市/区</option>
+                            <div :class="{warn: noCity}">
+                                <select v-model="citySelected" @change="onChange2" required>
+                                    <!-- <option value="" selected>市/区</option> -->
                                     <option v-for="(item, index) in checkList" :value="item" :key="index">
                                         {{item}}
                                     </option>
                                 </select>
+                                <div v-if="noCity" class="warning">请选择所在地</div>
                             </div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="label">房屋面积</div>
-                        <div class="input_block area">
-                            <input type="number" placeholder="请输入建筑面积">
+                        <div :class="[noArea ? 'input_block area warn' : 'input_block area']">
+                            <input type="number" v-model="guest.area" placeholder="请输入建筑面积">
+                            <div v-if="noArea" class="warning">请填写房屋面积</div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="label">装修风格</div>
-                        <div class="input_block">
-                            <select name="" id="" required>
+                        <div :class="[noStyle ? 'input_block warn' : 'input_block']">
+                            <select v-model="styleSelected" required>
                                 <option value="" selected>请选择装修风格</option>
                                 <option>现代简约风</option>
                                 <option>田园风格</option>
                                 <option>中式风格</option>
                                 <option>欧式风格</option>
                             </select>
+                            <div v-if="noStyle" class="warning">请选择装修风格</div>
                         </div>
                     </div>
                     <!-- <div class="item">
@@ -72,25 +76,53 @@
                     </div> -->
                     <div class="item">
                         <div class="label">手机号码</div>
-                        <div class="input_block">
-                            <input type="text" placeholder="请输入获取报价的真实号码">
+                        <div :class="[noMobile || realMobile ? 'input_block warn' : 'input_block']">
+                            <input type="tel" v-model="guest.mobile" maxlength="11" placeholder="请输入获取报价的真实号码">
+                            <div v-if="noMobile" class="warning">请填写手机号码</div>
+                            <div v-if="realMobile" class="warning">请填写正确的手机号</div>
                         </div>
                     </div>
                     <div class="item">
                         <div class="label">您的姓名</div>
-                        <div class="input_block">
-                            <input type="text" placeholder="请输入您的真实姓名">
+                        <div :class="[noName ? 'input_block warn' : 'input_block']">
+                            <input type="text" v-model="guest.name" placeholder="请输入您的真实姓名">
+                            <div v-if="noName" class="warning">请填写真实姓名</div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="right">
-                <div class="title">您家的装修预算<span>{{182346}}</span>元</div>
+                <div class="title">您家的装修预算<span>{{total_cost}}</span>元</div>
                 <div class="content">
-                    <p>材料费:<span>{{76356}}</span>元</p>
-                    <p>人工费:<span>{{6796}}</span>元</p>
-                    <p>设计费:<span>{{9356}}</span>元</p>
-                    <p>质检费:<span>{{1063}}</span>元</p>
+                    <p>材料费:<span>{{material_cost}}</span>元</p>
+                    <p>人工费:<span>{{labour_cost}}</span>元</p>
+                    <p>设计费:<span>{{design_cost}}</span>元</p>
+                    <p>质检费:<span>{{quality_cost}}</span>元</p>
+                </div>
+            </div>
+            <div class="submit_block danger">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="content" @click="submit">
+                    <p>开始</p>
+                    <p>计算</p>
+                </div>
+            </div>
+        </div>
+        <!-- 弹窗 -->
+        <div class="modal-bg" v-show="showDialog">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <img src="/static/image/tips.png" alt="">
+                </div>
+                <div class="modal-main">
+                    <p>您的装修信息已提交</p>
+                    <p>我们将快速为您计算预算</p>
+                </div>
+                <div class="modal-footer">
+                    <!-- <div class="cancel" @click="cancel">取消</div> -->
+                    <div class="confirm" @click="confirm">知道了</div>
                 </div>
             </div>
         </div>
@@ -99,56 +131,64 @@
 
 </html>
 
-<script src="/static/js/vue.js"></script>
-<!-- <script src="/static/js/vue.min.js"></script> -->
+<!-- <script src="/static/js/vue.js"></script> -->
+<script src="/static/js/vue.min.js"></script>
 <script src="http://code.jquery.com/jquery-3.5.1.js"></script>
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            areaList: [],  // 省市数据
+            guest: {}, //表单信息对象
+            areaList: [], //省市数据
             cityList: [], //市级数据
             checkList: [], //省级对应的市级数据
-            items: [{
-                    // id: 11,
-                    name: '分类1',
-                    city: ['北京','上海','南京']
-                },
-                {
-                    // id: 22,
-                    name: '分类2',
-                    city: ['宝马','奔驰','奥迪']
-                },
-                {
-                    // id: 33,
-                    name: '分类3',
-                    city: ['酸菜鱼','小笼包','烤鸭']
-                }
-            ],
-            areaSelected: '',
-            citySelected: '',
+            areaSelected: '', //选择的省级
+            citySelected: '', //选择的市级
+            styleSelected: '', //选择的装修风格
+            material_cost: 0, //材料费
+            labour_cost: 0, //人工费
+            design_cost: 0, //设计费
+            quality_cost: 0, //质检费
+            total_cost: 0, //总价
+            noAreas: false, //有无省级
+            noCity: false, //有无市级
+            noArea: false, //有无填写面积
+            noStyle: false, //有无住房风格
+            noMobile: false, //有无手机号
+            realMobile: false, //真实手机号
+            noName: false, //有无姓名
+            showDialog: false, //弹窗显示
             baseURL: 'http://server.yingku878.com/',
             message: 'Hello Vue!'
         },
-        created() {
+        mounted() {
             // console.log('ready')
             // this.areaSelected = '省/市';
             // this.citySelected = '市/区';
+            var myRandom = setInterval(() => {
+                this.startRandom()
+            }, 300)
             this.getAreaList()
         },
-        undated() {
-            console.log(111)
+        beforeDestroy() {
+            clearInterval(myRandom)
+            console.log('destroy')
         },
         methods: {
             // 获取省市
             getAreaList() {
                 $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
                     if (res.code === 200) {
+                        res.data.unshift({
+                            province: '省/市'
+                        })
+                        this.checkList.unshift('市/区')
                         this.areaList = res.data
                         this.areaList.forEach(item => {
                             this.cityList.push(item.city)
                         })
-                        console.log(this.cityList)
+                        this.areaSelected = this.areaList[0].province
+                        this.citySelected = this.checkList[0]
                     }
                 })
             },
@@ -157,15 +197,106 @@
                 console.log(e.target.value)
                 let value = e.target.value
                 let index = this.areaList.findIndex(item => item.province == value)
-                // console.log(index)
-                let result = this.cityList.filter((v,i) => i == index)
+                let result = this.cityList.filter((v, i) => i == index)
+                result.unshift('--')
                 this.checkList = result.flat()
-                // this.citySelected = '--'
+                this.citySelected = this.checkList[0]
+            },
+            // 随机数
+            startRandom() {
+                this.material_cost = getRandom(12389, 190478)
+                this.labour_cost = getRandom(12389, 87962)
+                this.design_cost = getRandom(1789, 8645)
+                this.quality_cost = getRandom(1678, 5436)
+                this.total_cost = this.material_cost + this.labour_cost + this.design_cost + this.quality_cost
+
+                function getRandom(start, end, fixed = 0) {
+                    let differ = end - start
+                    let random = Math.random()
+                    return Number((start + differ * random).toFixed(fixed))
+                }
             },
             // 市级下拉监听
             onChange2(e) {
                 console.log(e.target.value)
             },
+            // 弹窗取消
+            cancel() {
+                this.showDialog = false
+            },
+            // 弹窗确认
+            confirm() {
+                this.showDialog = false
+            },
+            // 表单提交
+            submit() {
+                if (this.areaSelected == '省/市') {
+                    this.noAreas = true
+                    return false
+                } else {
+                    this.noAreas = false
+                }
+                if (this.citySelected == '市/区' || this.citySelected == '--') {
+                    this.noCity = true
+                    return false
+                } else {
+                    this.noCity = false
+                }
+                if (!this.guest.area) {
+                    this.noArea = true
+                    return false
+                } else {
+                    this.noArea = false
+                }
+                if (!this.styleSelected) {
+                    this.noStyle = true
+                    return false
+                } else {
+                    this.noStyle = false
+                }
+                if (!this.guest.mobile) {
+                    this.noMobile = true
+                    return false
+                } else {
+                    this.noMobile = false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.mobile))) {
+                    this.realMobile = true
+                    return false
+                } else {
+                    this.realMobile = false
+                }
+                if (!this.guest.name) {
+                    this.noName = true
+                    return false
+                } else {
+                    this.noName = false
+                }
+                let obj = {
+                    name: this.guest.name,
+                    mobile: this.guest.mobile,
+                    province: this.areaSelected,
+                    city: this.citySelected,
+                    area: this.guest.area,
+                    style: this.styleSelected,
+                    type: 1
+                }
+                // console.log(obj)
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showDialog = true
+                    },
+                    error: (errore) => {
+                        console.log(errore);
+                    }
+                });
+            }
         }
     })
 </script>

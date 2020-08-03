@@ -11,18 +11,19 @@
 .container {
     display: flex;
     justify-content: space-between;
+    position: relative;
     margin: 0 auto;
-    min-width: 990px;
-    background: #FFFEFC;
+    min-width: 1100px;
+    background: #fffefc;
 }
 
-.container>div {
+.container > div {
     width: 50%;
 }
 
 .container .left {
-    padding: 0 40px;
-    border-right: 1px solid #DDDDDD;
+    padding: 0 50px;
+    border-right: 1px solid #dddddd;
 }
 
 .container .left .title {
@@ -41,8 +42,8 @@
     font-size: 13px;
 }
 
-.container .left .title .off>span {
-    color: #FF3734;
+.container .left .title .off > span {
+    color: #ff3734;
     margin: 0 4px;
 }
 
@@ -55,7 +56,7 @@
 .container .left .form_block .item {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .container .left .form_block .item .label {
@@ -68,38 +69,56 @@
 
 .container .left .form_block .item .label::after {
     content: "*";
-    color: #FF2D55;
+    color: #ff2d55;
     font-size: 18px;
     margin-left: 4px;
 }
 
 .container .left .form_block .item .input_block {
+    position: relative;
     display: flex;
     align-items: center;
     width: 250px;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
     padding: 0 8px 0 3px;
 }
 
+.container .left .form_block .item .input_block.warn {
+    border: 1px solid #f66;
+}
+
 .container .left .form_block .item .select_block {
+    position: relative;
     display: flex;
     align-items: center;
     width: 250px;
 }
 
-.container .left .form_block .item .select_block>div {
-    flex: 1;
-    border: 1px solid #DDDDDD;
+.container .left .form_block .item .warning {
+    position: absolute;
+    bottom: -18px;
+    color: #f66;
+    font-size: 12px;
 }
 
-.container .left .form_block .item .select_block>div:first-child {
+.container .left .form_block .item .select_block > div {
+    flex: 1;
+    border: 1px solid #dddddd;
+}
+
+.container .left .form_block .item .select_block > div.warn {
+    border: 1px solid #f66;
+}
+
+.container .left .form_block .item .select_block > div:first-child {
     margin-right: 14px;
 }
 
-.container .left .form_block .item .input_block>input,select {
+.container .left .form_block .item .input_block > input,
+select {
     color: #333;
     width: 100%;
-    padding: 10px;
+    padding: 9px 10px;
     /* outline: rgb(150, 213, 185) solid 1px; */
 }
 
@@ -115,7 +134,7 @@
     padding-left: 8px;
 }
 
-.container .left .item .radio_block>div {
+.container .left .item .radio_block > div {
     display: flex;
     align-items: center;
     color: #333;
@@ -123,7 +142,7 @@
     margin-right: 50px;
 }
 
-.container .left .item .radio_block>div>img{
+.container .left .item .radio_block > div > img {
     width: 20px;
     height: 20px;
     margin-right: 12px;
@@ -141,8 +160,10 @@
     padding: 50px 0 26px;
 }
 
-.container .right .title>span {
-    color: #FF2D54;
+.container .right .title > span {
+    display: inline-block;
+    width: 120px;
+    color: #ff2d54;
     font-size: 25px;
 }
 
@@ -151,16 +172,163 @@
     margin: 0 auto 100px;
     padding: 30px 0;
     line-height: 50px;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #dddddd;
 }
 
-.container .right .content>p {
+.container .right .content > p {
     font-size: 16px;
 }
 
-.container .right .content>p>span {
+.container .right .content > p > span {
     display: inline-block;
     width: 86px;
-    color: #FF3734;
+    color: #ff3734;
     font-size: 17px;
+}
+
+/* 提交按钮 */
+
+.container .submit_block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 150px;
+    height: 150px;
+    background: #fff;
+}
+
+.container .submit_block .content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100px;
+    height: 100px;
+    color: #fff;
+    font-size: 17px;
+    line-height: 23px;
+    background: #2fde82;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.container .submit_block .circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    width: calc(160px - 6px); /* 减去边框的大小 */
+    height: calc(160px - 6px); /* 减去边框的大小 */
+    border: 3px solid #fff;
+    z-index: 0;
+}
+
+.container .submit_block .circle:first-child {
+    animation: circle-opacity 2s infinite;
+}
+
+.container .submit_block .circle:nth-child(2) {
+    animation: circle-opacity 2s infinite;
+    animation-delay: 0.3s;
+}
+
+.container .submit_block .circle:nth-child(3) {
+    animation: circle-opacity 2s infinite;
+    animation-delay: 0.6s;
+}
+.container .submit_block.danger .circle {
+    background: linear-gradient(
+        45deg,
+        #ff0000 0%,
+        #ffb600 11%,
+        #fff600 22%,
+        #a5ff00 33%,
+        #00a9ff 44%,
+        #0400ff 55%,
+        #8a00fc 66%,
+        #ff00e9 77%,
+        #ff0059 88%,
+        #ff0000 100%
+    );
+}
+
+.container .submit_block.danger .circle {
+    border-color: #2fde82;
+}
+
+@keyframes circle-opacity {
+    from {
+        opacity: 1;
+        transform: scale(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(1);
+    }
+}
+
+/* 弹窗 */
+
+.modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px 58px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    height: 56px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 57px;
+}
+
+.modal-footer > div {
+    width: 100px;
+    text-align: center;
+}
+
+.modal-footer .confirm {
+    width: 230px;
+    color: #fff;
+    font-size: 18px;
+    line-height: 40px;
+    background: #36E083;
+    border-radius: 30px;
+}
+
+.modal-main {
+    color: #333537;
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
+    padding: 15px 40px 24px;
 }
