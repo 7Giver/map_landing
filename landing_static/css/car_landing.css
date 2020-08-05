@@ -1,0 +1,34 @@
+#app {
+    position: relative;
+    min-width: 1400px;
+    height: 100vh;
+    background: url("/landing_static/image/banner.png") no-repeat center / 100%;
+}
+
+.header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #fff;
+    font-size: 18px;
+    line-height: 50px;
+    letter-spacing: 1px;
+    font-weight: 200;
+    padding-left: 16%;
+    background: #1f2741;
+    opacity: 0.8;
+}
+
+.content {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 54px 0 30px;
+    background: #fff;
+}
+
+.content > form {
+    width: 50%;
+    margin: 0 auto;
+}

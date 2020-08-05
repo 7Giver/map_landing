@@ -1,7 +1,3 @@
-[v-cloak] {
-    display: none !important;
-}
-
 #app {
     display: flex;
     align-items: center;

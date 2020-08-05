@@ -121,3 +121,7 @@ input::-webkit-input-placeholder {
 select:invalid {
     color: #999;
 }
+
+[v-cloak] {
+    display: none !important;
+}
