@@ -1,6 +1,6 @@
 #app {
     position: relative;
-    background: url('/landing_static/image/house_landing/bg.png') no-repeat center / 100% 100%;
+    background: url('../image/house_landing/bg.png') no-repeat center / 100% 100%;
 }
 
 .banner>img {

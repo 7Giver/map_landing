@@ -2,7 +2,7 @@
     position: relative;
     min-width: 1400px;
     height: 100vh;
-    background: url("/landing_static/image/banner.png") no-repeat center / 100%;
+    background: url("../image/banner.png") no-repeat center / 100%;
 }
 
 .header {
