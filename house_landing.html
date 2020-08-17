@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>买房落地页</title>
+    <link rel="stylesheet" href="./landing_static/css/main.css">
+    <link rel="stylesheet" href="./landing_static/css/element-ui.css">
+    <link rel="stylesheet" href="./landing_static/css/house_landing.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="banner">
+            <img src="/landing_static/image/house_landing/banner.png" alt="">
+        </div>
+        <div class="top_block">
+            <div
+                :class="[iconIndex == index ? 'item on' : 'item']"
+                v-for="(item, index) in iconList"
+                :key="index"
+                @click="checkIcon(index)"
+            >
+                <img :src="item.img" alt="">
+                <p>{{item.title}}</p>
+            </div>
+        </div>
+        <div class="content">
+            <div class="inline_block">
+                <img src="/landing_static/image/house_landing/icon_04.png" alt="">
+                <p>租房</p>
+            </div>
+            <div class="flex_block">
+                <p>区域</p>
+                <div class="item_block">
+                    <div
+                        :class="[areaIndex == index ? 'item on' : 'item']"
+                        v-for="(item, index) in areaList"
+                        :key="index"
+                        @click="areaCheck(index,item)"
+                    >
+                        {{item}}
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="show_more">查看更多</div> -->
+            <div class="flex_block">
+                <p>户型</p>
+                <div class="item_block">
+                    <div
+                        :class="[typeIndex == index ? 'item on' : 'item']"
+                        v-for="(item, index) in typeList"
+                        :key="index"
+                        @click="typeCheck(index,item)"
+                    >
+                        {{item}}
+                    </div>
+                </div>
+            </div>
+            <div class="flex_block">
+                <p>价格</p>
+                <div class="item_block">
+                    <div
+                        :class="[cashIndex == index ? 'item on' : 'item']"
+                        v-for="(item, index) in cashList"
+                        :key="index"
+                        @click="cashCheck(index,item)"
+                    >
+                        {{item}}
+                    </div>
+                </div>
+            </div>
+            <h3>怎么联系您呢？</h3>
+            <div class="input_block">
+                <el-input type="tel" v-model="client.phone" maxlength="11" placeholder="请输入手机号码"></el-input>
+            </div>
+        </div>
+        <div class="submit_btn" @click="submit">提交需求</div>
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+    </div>
+</body>
+
+<script src="./landing_static/js/vue.min.js"></script>
+<script src="./landing_static/js/jQuery.js"></script>
+<script src="./landing_static/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            client: {},
+            iconIndex: 0,
+            areaIndex: null,
+            typeIndex: null,
+            cashIndex: null,
+            confimShow: false, //提示框显示
+            confim_text: '', //提示框信息
+            iconList: [
+                {
+                    img: '/landing_static/image/house_landing/icon_01.png',
+                    title: '租房'
+                },
+                {
+                    img: '/landing_static/image/house_landing/icon_02.png',
+                    title: '买房'
+                },
+                {
+                    img: '/landing_static/image/house_landing/icon_03.png',
+                    title: '售房'
+                },
+            ],
+            areaList: ['徐家汇', '浦东新区', '闵行区', '嘉定', '静安区', '杨浦区', '闵行区', '松江', '宝山区', '金山区', '青浦区'],
+            typeList: ['合租', '单间', '一室', '两室', '三室', '四室', '五室以上'],
+            cashList: ['1000以下','1000-1500','1500-2000','2000-2500','2500-3500','3500-5000','5000以上'],
+        },
+        mounted() {
+            // console.log(Array.prototype)
+        },
+        methods: {
+            // 切换icon
+            checkIcon(index) {
+                this.iconIndex = index
+                index !== 0 && index == 1
+                 ? window.location.href= './house_buy_landing.html'
+                 : window.location.href= './car_landing.html'
+            },
+            // 地区切换
+            areaCheck(index, item) {
+                this.areaIndex = index
+                this.client.area = item
+            },
+            // 户型切换
+            typeCheck(index, item) {
+                this.typeIndex = index
+                this.client.type = item
+            },
+            // 价格切换
+            cashCheck(index, item) {
+                this.cashIndex = index
+                this.client.cash = item
+            },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
+            // 表单提交
+            submit() {
+                if (!this.client.area) {
+                    this.showConfim('请选择区域')
+                    return false
+                }
+                if (!this.client.type) {
+                    this.showConfim('请选择户型')
+                    return false
+                }
+                if (!this.client.cash) {
+                    this.showConfim('请选择价格')
+                    return false
+                }
+                if (!this.client.phone) {
+                    this.showConfim('请输入手机号')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.client.phone))) {
+                    this.showConfim('请输入正确的手机号')
+                    return false
+                }
+                console.log(this.client)
+            }
+        }
+    })
+</script>
+
+</html>
