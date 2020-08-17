@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>买房落地页</title>
     <link rel="stylesheet" href="./landing_static/css/element-ui.css">
+    <link rel="stylesheet" href="./landing_static/css/vant.css">
     <link rel="stylesheet" href="./landing_static/css/main.css">
     <link rel="stylesheet" href="./landing_static/css/house_buy_landing.css">
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <div class="banner">
             <img src="/landing_static/image/house_landing/banner2.png" alt="">
         </div>
@@ -24,10 +25,10 @@
                     :key="index"
                     @click="areaCheck(index,item)"
                 >
-                    {{item}}
+                    {{item.name}}
                 </div>
             </div>
-            <div class="show_more">查看更多</div>
+            <!-- <div class="show_more">查看更多</div> -->
             <h3>哪种户型与您最匹配呢？</h3>
             <div class="item_block">
                 <div
@@ -40,30 +41,22 @@
                 </div>
             </div>
             <h3>您打算花多少钱买房呢？</h3>
-            <div class="select_block">
-                <el-select v-model="client.minCash" placeholder="请选择">
-                    <el-option
-                        v-for="item in minList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    >
-                    </el-option>
-                </el-select>
+            <div class="select_block" @click="showPopup">
+                <div class="cash_block">{{guest.minCash}}</div>
                 <div class="my_border"></div>
-                <el-select v-model="client.maxCash" placeholder="请选择">
-                    <el-option
-                        v-for="item in maxList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    >
-                    </el-option>
-                </el-select>
+                <div class="cash_block">{{guest.maxCash}}</div>
             </div>
+            <van-popup v-model="showPicker" round position="bottom">
+                <van-picker
+                    show-toolbar
+                    :columns="columns"
+                    @cancel="showPicker = false"
+                    @confirm="onConfirm"
+                />
+            </van-popup>
             <h3>怎么联系您呢？</h3>
             <div class="input_block">
-                <el-input type="tel" v-model="client.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
+                <el-input type="tel" v-model="guest.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
             </div>
         </div>
         <div class="submit_btn" @click="submit">提交需求</div>
@@ -74,54 +67,80 @@
 <script src="./landing_static/js/vue.min.js"></script>
 <script src="./landing_static/js/jQuery.js"></script>
 <script src="./landing_static/js/element-ui.js"></script>
+<script src="./landing_static/js/vant.min.js"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            client: {
+            guest: {
                 minCash: '100',
                 maxCash: '150'
             },
+            baseURL: 'http://server.yingku878.com/',
             areaIndex: null,
             typeIndex: null,
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
-            areaList: ['不限', '徐家汇', '浦东新区', '闵行区', '嘉定', '静安区', '杨浦区', '闵行区', '松江', '宝山区', '金山区', '青浦区'],
+            showPicker: false,
+            columns: [
+                {
+                    values: ['30', '40', '50', '60', '70', '80', '90', '100'],
+                    defaultIndex: 7,
+                },
+                {
+                    values: ['150', '160', '170', '180', '190', '200', '400', '600', '800', '1000', '1400', '1800', '2000'],
+                    defaultIndex: 0,
+                },
+            ],
+            areaList: [],
             typeList: ['不限', '一居室', '二居室', '三居室', '四居室', '别墅', '复式', '其他'],
-            minList: [{
-                value: '选项1',
-                label: '100'
-            }, {
-                value: '选项2',
-                label: '105'
-            }, {
-                value: '选项3',
-                label: '110'
-            }],
-            maxList: [{
-                value: '选项1',
-                label: '150'
-            }, {
-                value: '选项2',
-                label: '155'
-            }, {
-                value: '选项3',
-                label: '160'
-            }],
         },
         mounted() {
             // console.log(Array.prototype)
+            this.getCity()
         },
         methods: {
+            // 获取省市
+            getCity() {
+                let cname = returnCitySN.cname
+                let province = cname.split('省')[0]
+                let city = cname.split('省')[1].split('市')[0]
+                this.guest.province = province
+                this.guest.city = city
+                this.getAreaList()
+            },
+            // 根据省市获取区级
+            getAreaList() {
+                $.post(`${this.baseURL}?r=api/index/district-list`, {
+                    province: this.guest.province,
+                    city: this.guest.city
+                }, res => {
+                    if (res.code === 200) {
+                        this.areaList = res.data
+                    }
+                })
+            },
+            // 显示picker
+            showPopup() {
+                this.showPicker = true
+            },
+            // picker选中
+            onConfirm(value) {
+                // console.log(value)
+                this.guest.minCash = value[0]
+                this.guest.maxCash = value[1]
+                this.showPicker = false
+            },
             // 地区切换
             areaCheck(index, item) {
                 this.areaIndex = index
-                this.client.area = item
+                this.guest.area = item.name
             },
             // 户型切换
             typeCheck(index, item) {
                 this.typeIndex = index
-                this.client.type = item
+                this.guest.type = item
             },
             //显示提示框
             showConfim(text, time) {
@@ -134,23 +153,49 @@
             },
             // 表单提交
             submit() {
-                if (!this.client.area) {
+                if (!this.guest.area) {
                     this.showConfim('请选择区域')
                     return false
                 }
-                if (!this.client.type) {
+                if (!this.guest.type) {
                     this.showConfim('请选择户型')
                     return false
                 }
-                if (!this.client.phone) {
+                if (!this.guest.phone) {
                     this.showConfim('请输入手机号')
                     return false
                 }
-                if (!(/^1[3456789]\d{9}$/.test(this.client.phone))) {
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.phone))) {
                     this.showConfim('请输入正确的手机号')
                     return false
                 }
-                console.log(this.client)
+                let obj = {
+                    type: 14, //类型：1--装修，2--餐饮，3--汽修，14--房产
+                    house_type: '买房',
+                    name: '',
+                    mobile: this.guest.phone,
+                    province: this.guest.province,
+                    city: this.guest.city,
+                    district: this.guest.area,
+                    house_layout: this.guest.type,
+                    price: `${this.guest.minCash}-${this.guest.maxCash}`
+                }
+                // console.log(obj)
+                // return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
             }
         }
     })

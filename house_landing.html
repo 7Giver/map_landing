@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>买房落地页</title>
+    <title>租房落地页</title>
     <link rel="stylesheet" href="./landing_static/css/element-ui.css">
     <link rel="stylesheet" href="./landing_static/css/main.css">
     <link rel="stylesheet" href="./landing_static/css/house_landing.css">
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <div class="banner">
             <img src="/landing_static/image/house_landing/banner.png" alt="">
         </div>
@@ -40,7 +40,7 @@
                         :key="index"
                         @click="areaCheck(index,item)"
                     >
-                        {{item}}
+                        {{item.name}}
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             </div>
             <h3>怎么联系您呢？</h3>
             <div class="input_block">
-                <el-input type="tel" v-model="client.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
+                <el-input type="tel" v-model="guest.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
             </div>
         </div>
         <div class="submit_btn" @click="submit">提交需求</div>
@@ -84,11 +84,13 @@
 <script src="./landing_static/js/vue.min.js"></script>
 <script src="./landing_static/js/jQuery.js"></script>
 <script src="./landing_static/js/element-ui.js"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            client: {},
+            guest: {},
+            baseURL: 'http://server.yingku878.com/',
             iconIndex: 0,
             areaIndex: null,
             typeIndex: null,
@@ -109,35 +111,56 @@
                     title: '售房'
                 },
             ],
-            areaList: ['徐家汇', '浦东新区', '闵行区', '嘉定', '静安区', '杨浦区', '闵行区', '松江', '宝山区', '金山区', '青浦区'],
+            areaList: [],
             typeList: ['合租', '单间', '一室', '两室', '三室', '四室', '五室以上'],
             cashList: ['1000以下','1000-1500','1500-2000','2000-2500','2500-3500','3500-5000','5000以上'],
         },
         mounted() {
-            // console.log(Array.prototype)
+            // console.log(returnCitySN.cname)
+            this.getCity()
         },
         methods: {
+            // 获取省市
+            getCity() {
+                let cname = returnCitySN.cname
+                let province = cname.split('省')[0]
+                let city = cname.split('省')[1].split('市')[0]
+                this.guest.province = province
+                this.guest.city = city
+                this.getAreaList()
+            },
+            // 根据省市获取区级
+            getAreaList() {
+                $.post(`${this.baseURL}?r=api/index/district-list`, {
+                    province: this.guest.province,
+                    city: this.guest.city
+                }, res => {
+                    if (res.code === 200) {
+                        this.areaList = res.data
+                    }
+                })
+            },
             // 切换icon
             checkIcon(index) {
                 this.iconIndex = index
                 index !== 0 && index == 1
-                 ? window.location.href= './house_buy_landing.html'
-                 : window.location.href= './car_landing.html'
+                    ? window.location.href= './house_buy_landing.html'
+                    : window.location.href= './house_sell_landing.html'
             },
             // 地区切换
             areaCheck(index, item) {
                 this.areaIndex = index
-                this.client.area = item
+                this.guest.area = item.name
             },
             // 户型切换
             typeCheck(index, item) {
                 this.typeIndex = index
-                this.client.type = item
+                this.guest.type = item
             },
             // 价格切换
             cashCheck(index, item) {
                 this.cashIndex = index
-                this.client.cash = item
+                this.guest.cash = item
             },
             //显示提示框
             showConfim(text, time) {
@@ -150,27 +173,53 @@
             },
             // 表单提交
             submit() {
-                if (!this.client.area) {
+                if (!this.guest.area) {
                     this.showConfim('请选择区域')
                     return false
                 }
-                if (!this.client.type) {
+                if (!this.guest.type) {
                     this.showConfim('请选择户型')
                     return false
                 }
-                if (!this.client.cash) {
+                if (!this.guest.cash) {
                     this.showConfim('请选择价格')
                     return false
                 }
-                if (!this.client.phone) {
+                if (!this.guest.phone) {
                     this.showConfim('请输入手机号')
                     return false
                 }
-                if (!(/^1[3456789]\d{9}$/.test(this.client.phone))) {
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.phone))) {
                     this.showConfim('请输入正确的手机号')
                     return false
                 }
-                console.log(this.client)
+                let obj = {
+                    type: 14, //类型：1--装修，2--餐饮，3--汽修，14--房产
+                    house_type: '租房',
+                    name: '',
+                    mobile: this.guest.phone,
+                    province: this.guest.province,
+                    city: this.guest.city,
+                    district: this.guest.area,
+                    house_layout: this.guest.type,
+                    price: this.guest.cash
+                }
+                // console.log(obj)
+                // return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
             }
         }
     })

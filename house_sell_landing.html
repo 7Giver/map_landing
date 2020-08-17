@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>售房落地页</title>
+    <link rel="stylesheet" href="./landing_static/css/element-ui.css">
+    <link rel="stylesheet" href="./landing_static/css/vant.css">
+    <link rel="stylesheet" href="./landing_static/css/main.css">
+    <link rel="stylesheet" href="./landing_static/css/house_sell_landing.css">
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="banner">
+            <img src="/landing_static/image/house_landing/banner3.png" alt="">
+        </div>
+        <div class="content">
+            <h3>发布出售消息</h3>
+            <div class="input_block">
+                <p>小区名称</p>
+                <el-input v-model="guest.courtName" placeholder="请填写小区名"></el-input>
+            </div>
+            <div class="input_block">
+                <p>楼栋号</p>
+                <el-input type="tel" v-model="guest.courtNum" placeholder="请填写楼栋号"></el-input>
+            </div>
+            <div class="input_block">
+                <p>售 价</p>
+                <el-input v-model="guest.cash" placeholder="请填写售价"></el-input>
+            </div>
+            <div class="input_block">
+                <p>面 积</p>
+                <el-input v-model="guest.areas" placeholder="请填写建筑面积"></el-input>
+            </div>
+            <div class="input_block">
+                <p>姓 名</p>
+                <el-input v-model="guest.name" placeholder="请填写姓名"></el-input>
+                <van-radio-group v-model="radio" direction="horizontal">
+                    <van-radio name="1" checked-color="#FC3849" icon-size="18">先生</van-radio>
+                    <van-radio name="2" checked-color="#FC3849" icon-size="18">女士</van-radio>
+                </van-radio-group>
+            </div>
+            <div class="input_block">
+                <p>联系电话</p>
+                <el-input v-model="guest.phone" placeholder="请填写联系电话"></el-input>
+            </div>
+        </div>
+        <div class="submit_btn" @click="submit">提交需求</div>
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+    </div>
+</body>
+
+<script src="./landing_static/js/vue.min.js"></script>
+<script src="./landing_static/js/jQuery.js"></script>
+<script src="./landing_static/js/element-ui.js"></script>
+<script src="./landing_static/js/vant.min.js"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            guest: {},
+            baseURL: 'http://server.yingku878.com/',
+            radio: '1', //单选框默认
+            confimShow: false, //提示框显示
+            confim_text: '', //提示框信息
+        },
+        mounted() {
+            // console.log(Array.prototype)
+            this.getCity()
+        },
+        methods: {
+            // 获取省市
+            getCity() {
+                let cname = returnCitySN.cname
+                let province = cname.split('省')[0]
+                let city = cname.split('省')[1].split('市')[0]
+                this.guest.province = province
+                this.guest.city = city
+            },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
+            // 表单提交
+            submit() {
+                if (!this.guest.courtName) {
+                    this.showConfim('请填写小区名称')
+                    return false
+                }
+                if (!this.guest.courtNum) {
+                    this.showConfim('请填写楼栋号')
+                    return false
+                }
+                if (!this.guest.cash) {
+                    this.showConfim('请填写售价')
+                    return false
+                }
+                if (!this.guest.areas) {
+                    this.showConfim('请填写建筑面积')
+                    return false
+                }
+                if (!this.guest.name) {
+                    this.showConfim('请填写姓名')
+                    return false
+                }
+                if (!this.guest.phone) {
+                    this.showConfim('请填写手机号')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.phone))) {
+                    this.showConfim('请填写正确的手机号')
+                    return false
+                }
+                let name = this.guest.name
+                this.radio == '1'
+                    ? name = name + '先生'
+                    : name = name + '女士'
+                let obj = {
+                    type: 14, //类型：1--装修，2--餐饮，3--汽修，14--房产
+                    house_type: '售房',
+                    name: name,
+                    mobile: this.guest.phone,
+                    province: this.guest.province,
+                    city: this.guest.city,
+                    area: this.guest.areas,
+                    price: this.guest.cash,
+                    house_court: this.guest.courtName, //小区名称
+                    house_num: this.guest.courtNum, //楼栋号
+                }
+                // console.log(obj)
+                // return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
+            }
+        }
+    })
+</script>
+
+</html>

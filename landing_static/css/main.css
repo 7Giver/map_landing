@@ -131,7 +131,3 @@ select:invalid {
 .el-input__inner {
     border: 1px solid #C2CCE4;
 }
-
-.el-input__suffix {
-    display: none;
-}
