@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
         <div class="header">
             <p>汽修商家联盟</p>
         </div>
@@ -46,6 +46,7 @@
                 </el-form-item>
             </el-form>
         </div>
+        <p class="copyright">版权：合肥金堡网络科技有限公司</p>
         <!-- 弹窗 -->
         <div class="modal-bg" v-show="showDialog">
             <div class="modal-container">

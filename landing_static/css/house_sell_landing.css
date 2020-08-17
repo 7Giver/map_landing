@@ -5,6 +5,7 @@ body {
 #app {
     position: absolute;
     overflow-x: hidden;
+    padding-bottom: 8rem;
     /* position: relative; */
 }
 
@@ -125,4 +126,14 @@ body {
 
 .van-radio--horizontal {
     margin-right: 10px;
+}
+
+.copyright {
+    position: absolute;
+    left: 50%;
+    bottom: 5rem;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-size: 13px;
+    white-space: nowrap;
 }

@@ -338,3 +338,11 @@ select {
     line-height: 30px;
     padding: 15px 40px 24px;
 }
+
+.copyright {
+    position: absolute;
+    bottom: 2rem;
+    color: #fff;
+    font-size: 15px;
+    white-space: nowrap;
+}
