@@ -1,6 +1,6 @@
 #app {
     position: relative;
-    height: 100vh;
+    background: url('/landing_static/image/house_landing/bg.png') no-repeat center / 100% 100%;
 }
 
 .banner>img {
@@ -8,71 +8,17 @@
     display: block;
 }
 
-.top_block {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    text-align: center;
-    padding: 2rem 0;
-}
-
-.top_block .item {
-    position: relative;
-    color: #212121;
-    font-size: 15px;
-}
-
-.top_block .item>img {
-    width: 3.3rem;
-    height: 3.2rem;
-}
-
-.top_block .on {
-    color: #101D37;
-    font-weight: bold;
-}
-
-.top_block .on::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -1.6rem;
-    width: 0;
-    height: 0;
-    border-top: 7px solid #000;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    transform: translate(-50%, -50%);
-}
-
-.inline_block {
-    display: flex;
-    align-items: center;
-    color: #fff;
-    padding: 0.4rem 0 1.1rem;
-    padding-left: 1.2rem;
-    margin-bottom: -0.7rem;
-    border-radius: 10px 10px 0 0;
-    background: linear-gradient(90deg, #90A1D0, #C2CCE4);
-}
-
-.inline_block>img {
-    width: 1.2rem;
-    height: 1.2rem;
-    margin-right: 0.4rem;
-}
-
 .content {
     /* padding: 0 1rem; */
     text-align: center;
-    padding: 0 1.2rem;
+    padding: 0 1.6rem;
 }
 
 .content>h3 {
     font-size: 21px;
     font-weight: 600;
     letter-spacing: 1px;
-    margin: 1.3rem auto 1.6rem;
+    margin: 1.8rem auto 1.8rem;
 }
 
 .content .flex_block {
@@ -118,16 +64,30 @@
 
 .content .show_more {
     color: #7D90B2;
-    margin: 5px auto 30px;
+    margin: 5px auto 0;
     line-height: 40px;
     border-radius: 4px;
     letter-spacing: 1px;
     background: #F5F7F8;   
 }
 
+.content .select_block {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.content .select_block .my_border {
+    width: 2.5rem;
+    height: 1.5px;
+    margin: 0 0.9rem;
+    background: #C2CCE4;
+}
+
 .content .input_block {
     width: 85%;
-    margin: 0 auto 6.7rem;
+    margin: 0 auto;
+    padding-bottom: 7rem;
 }
 
 .submit_btn {
@@ -156,4 +116,14 @@
     letter-spacing: 1px;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.6);
+}
+
+.el-select::after {
+    content: 'W';
+    display: block;
+    position: absolute;
+    bottom: 0.67rem;
+    right: 0.7rem;
+    font-size: 15px;
+    font-weight: bold;
 }

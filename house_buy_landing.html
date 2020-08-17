@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>买房落地页</title>
+    <link rel="stylesheet" href="./landing_static/css/element-ui.css">
+    <link rel="stylesheet" href="./landing_static/css/main.css">
+    <link rel="stylesheet" href="./landing_static/css/house_buy_landing.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="banner">
+            <img src="/landing_static/image/house_landing/banner2.png" alt="">
+        </div>
+        <div class="content">
+            <h3>您打算在哪里安家呢？</h3>
+            <div class="item_block">
+                <div
+                    :class="[areaIndex == index ? 'item on' : 'item']"
+                    v-for="(item, index) in areaList"
+                    :key="index"
+                    @click="areaCheck(index,item)"
+                >
+                    {{item}}
+                </div>
+            </div>
+            <div class="show_more">查看更多</div>
+            <h3>哪种户型与您最匹配呢？</h3>
+            <div class="item_block">
+                <div
+                    :class="[typeIndex == index ? 'item on' : 'item']"
+                    v-for="(item, index) in typeList"
+                    :key="index"
+                    @click="typeCheck(index,item)"
+                >
+                    {{item}}
+                </div>
+            </div>
+            <h3>您打算花多少钱买房呢？</h3>
+            <div class="select_block">
+                <el-select v-model="client.minCash" placeholder="请选择">
+                    <el-option
+                        v-for="item in minList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    >
+                    </el-option>
+                </el-select>
+                <div class="my_border"></div>
+                <el-select v-model="client.maxCash" placeholder="请选择">
+                    <el-option
+                        v-for="item in maxList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    >
+                    </el-option>
+                </el-select>
+            </div>
+            <h3>怎么联系您呢？</h3>
+            <div class="input_block">
+                <el-input type="tel" v-model="client.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
+            </div>
+        </div>
+        <div class="submit_btn" @click="submit">提交需求</div>
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+    </div>
+</body>
+
+<script src="./landing_static/js/vue.min.js"></script>
+<script src="./landing_static/js/jQuery.js"></script>
+<script src="./landing_static/js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            client: {
+                minCash: '100',
+                maxCash: '150'
+            },
+            areaIndex: null,
+            typeIndex: null,
+            confimShow: false, //提示框显示
+            confim_text: '', //提示框信息
+            areaList: ['不限', '徐家汇', '浦东新区', '闵行区', '嘉定', '静安区', '杨浦区', '闵行区', '松江', '宝山区', '金山区', '青浦区'],
+            typeList: ['不限', '一居室', '二居室', '三居室', '四居室', '别墅', '复式', '其他'],
+            minList: [{
+                value: '选项1',
+                label: '100'
+            }, {
+                value: '选项2',
+                label: '105'
+            }, {
+                value: '选项3',
+                label: '110'
+            }],
+            maxList: [{
+                value: '选项1',
+                label: '150'
+            }, {
+                value: '选项2',
+                label: '155'
+            }, {
+                value: '选项3',
+                label: '160'
+            }],
+        },
+        mounted() {
+            // console.log(Array.prototype)
+        },
+        methods: {
+            // 地区切换
+            areaCheck(index, item) {
+                this.areaIndex = index
+                this.client.area = item
+            },
+            // 户型切换
+            typeCheck(index, item) {
+                this.typeIndex = index
+                this.client.type = item
+            },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
+            // 表单提交
+            submit() {
+                if (!this.client.area) {
+                    this.showConfim('请选择区域')
+                    return false
+                }
+                if (!this.client.type) {
+                    this.showConfim('请选择户型')
+                    return false
+                }
+                if (!this.client.phone) {
+                    this.showConfim('请输入手机号')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.client.phone))) {
+                    this.showConfim('请输入正确的手机号')
+                    return false
+                }
+                console.log(this.client)
+            }
+        }
+    })
+</script>
+
+</html>
