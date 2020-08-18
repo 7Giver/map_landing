@@ -3,10 +3,11 @@ body {
 }
 
 #app {
-    position: absolute;
+    /* position: absolute; */
     overflow-x: hidden;
+    max-width: 750px;
+    margin: 0 auto;
     padding-bottom: 8rem;
-    /* position: relative; */
 }
 
 .banner {
@@ -87,6 +88,7 @@ body {
     bottom: 0;
     color: #fff;
     width: 100%;
+    max-width: 750px;
     font-size: 20px;
     font-weight: 500;
     line-height: 62px;

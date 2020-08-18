@@ -136,6 +136,7 @@ select:invalid {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: #fff;
 }
 
 .navbar>div {
