@@ -22,6 +22,7 @@
         </div>
         <div class="banner">
             <img src="./landing_static/image/house_landing/banner2.png" alt="">
+            <div class="loaction" @click="showPopup">{{guest.city || guest.province}}</div>
         </div>
         <div class="content">
             <h3>您打算在哪里安家呢？</h3>
@@ -48,17 +49,17 @@
                 </div>
             </div>
             <h3>您打算花多少钱买房呢？</h3>
-            <div id="cash" class="select_block" @click="showPopup">
+            <div id="cash" class="select_block" @click="showCashBlock">
                 <div class="cash_block">{{guest.minCash}}</div>
                 <div class="my_border"></div>
                 <div class="cash_block">{{guest.maxCash}}</div>
             </div>
-            <van-popup v-model="showPicker" round position="bottom">
+            <van-popup v-model="showCash" round position="bottom">
                 <van-picker
                     show-toolbar
-                    :columns="columns"
-                    @cancel="showPicker = false"
-                    @confirm="onConfirm"
+                    :columns="cashList"
+                    @cancel="showCash = false"
+                    @confirm="cashOnConfirm"
                 />
             </van-popup>
             <h3>怎么联系您呢？</h3>
@@ -69,6 +70,15 @@
         <p class="copyright">版权：合肥金堡网络科技有限公司</p>
         <div class="submit_btn" @click="submit">免费咨询</div>
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+         <!-- picker弹出层 -->
+         <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+                show-toolbar
+                :columns="columns"
+                @cancel="showPicker = false"
+                @confirm="onConfirm"
+            />
+        </van-popup>
     </div>
 </body>
 
@@ -90,8 +100,10 @@
             typeIndex: null,
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
+            showCash: false,
             showPicker: false,
-            columns: [
+            columns: [],
+            cashList: [
                 {
                     values: ['30', '40', '50', '60', '70', '80', '90', '100'],
                     defaultIndex: 7,
@@ -107,6 +119,7 @@
         mounted() {
             // console.log(Array.prototype)
             this.getCity()
+            this.getAllCity()
         },
         methods: {
             // 获取省市
@@ -129,20 +142,65 @@
                     }
                 })
             },
+            // 获取全国并格式化数据
+            getAllCity() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        // console.log(res.data)
+                        let arr = res.data
+                        let newArr = []
+                        arr.forEach(item => {
+                            newArr.push({
+                                text: item.province,
+                                children: []
+                            })
+                        })
+                        let cityArr = []
+                        let result = []
+                        arr.forEach((item, index) => {
+                            cityArr.push(item.city)
+                            this.$set(result, index, [])
+                        })
+                        cityArr.forEach((item,index) => {
+                            item.forEach(v => {
+                                result[index].push({
+                                    text: v
+                                })
+                            })
+                        })
+                        newArr.forEach((item, index) => {
+                            item.children = result[index]
+                        })
+                        // console.log(newArr)
+                        this.columns = newArr
+                    }
+                })
+            },
             // 显示picker
             showPopup() {
                 this.showPicker = true
+            },
+            // picker选中
+            onConfirm(value) {
+                // console.log(value)
+                this.showPicker = false
+                this.guest.province = value[0]
+                this.guest.city = value[1]
+                this.getAreaList()
+            },
+            // 显示picker
+            showCashBlock() {
+                this.showCash = true
                 document.getElementById("cash").scrollIntoView({
                     behavior: "smooth",
                     block: "center"
                 })
             },
-            // picker选中
-            onConfirm(value) {
-                // console.log(value)
+            // 选择金额
+            cashOnConfirm(value) {
                 this.guest.minCash = value[0]
                 this.guest.maxCash = value[1]
-                this.showPicker = false
+                this.showCash = false
             },
             // 地区切换
             areaCheck(index, item) {

@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>租房落地页</title>
     <link rel="stylesheet" href="./landing_static/css/element-ui.css">
+    <link rel="stylesheet" href="./landing_static/css/vant.css">
     <link rel="stylesheet" href="./landing_static/css/main.css">
     <link rel="stylesheet" href="./landing_static/css/house_landing.css">
 </head>
 
 <body>
     <div id="app" v-cloak>
+        <div class="loaction" @click="showPopup">{{guest.city || guest.province}}</div>
         <div class="banner">
             <img src="./landing_static/image/house_landing/banner.png" alt="">
         </div>
@@ -80,12 +82,22 @@
         </div>
         <div class="submit_btn" @click="submit">免费咨询</div>
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+        <!-- picker弹出层 -->
+        <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+                show-toolbar
+                :columns="columns"
+                @cancel="showPicker = false"
+                @confirm="onConfirm"
+            />
+        </van-popup>
     </div>
 </body>
 
 <script src="./landing_static/js/vue.min.js"></script>
 <script src="./landing_static/js/jQuery.js"></script>
 <script src="./landing_static/js/element-ui.js"></script>
+<script src="./landing_static/js/vant.min.js"></script>
 <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
@@ -97,6 +109,7 @@
             areaIndex: null,
             typeIndex: null,
             cashIndex: null,
+            showPicker: false,
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
             iconList: [
@@ -116,10 +129,12 @@
             areaList: [],
             typeList: ['合租', '单间', '一室', '两室', '三室', '四室', '五室以上'],
             cashList: ['1000以下','1000-1500','1500-2000','2000-2500','2500-3500','3500-5000','5000以上'],
+            columns: [],
         },
         mounted() {
             // console.log(returnCitySN.cname)
             this.getCity()
+            this.getAllCity()
         },
         methods: {
             // 获取省市
@@ -148,10 +163,7 @@
                         this.guest.province = province
                         this.guest.city = city
                         this.getAreaList()
-                    } else {
-                        
                     }
-                    
                 }
             },
             // 根据省市获取区级
@@ -162,6 +174,40 @@
                 }, res => {
                     if (res.code === 200) {
                         this.areaList = res.data
+                    }
+                })
+            },
+            // 获取全国并格式化数据
+            getAllCity() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        // console.log(res.data)
+                        let arr = res.data
+                        let newArr = []
+                        arr.forEach(item => {
+                            newArr.push({
+                                text: item.province,
+                                children: []
+                            })
+                        })
+                        let cityArr = []
+                        let result = []
+                        arr.forEach((item, index) => {
+                            cityArr.push(item.city)
+                            this.$set(result, index, [])
+                        })
+                        cityArr.forEach((item,index) => {
+                            item.forEach(v => {
+                                result[index].push({
+                                    text: v
+                                })
+                            })
+                        })
+                        newArr.forEach((item, index) => {
+                            item.children = result[index]
+                        })
+                        // console.log(newArr)
+                        this.columns = newArr
                     }
                 })
             },
@@ -209,6 +255,18 @@
                 setTimeout(() => {
                     this.confimShow = false
                 }, setTiem)
+            },
+            // 显示picker
+            showPopup() {
+                this.showPicker = true
+            },
+            // picker选中
+            onConfirm(value) {
+                // console.log(value)
+                this.showPicker = false
+                this.guest.province = value[0]
+                this.guest.city = value[1]
+                this.getAreaList()
             },
             // 表单提交
             submit() {

@@ -6,6 +6,10 @@
     background: url('../image/house_landing/bg.png') no-repeat center / 100% 100%;
 }
 
+.banner {
+    position: relative;
+}
+
 .banner>img {
     width: 100%;
     display: block;

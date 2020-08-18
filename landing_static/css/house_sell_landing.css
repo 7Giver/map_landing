@@ -4,6 +4,7 @@ body {
 
 #app {
     /* position: absolute; */
+    position: relative;
     overflow-x: hidden;
     max-width: 750px;
     margin: 0 auto;
@@ -12,12 +13,12 @@ body {
 
 .banner {
     position: relative;
-    z-index: -2;
 }
 
 .banner>img {
     width: 100%;
     display: block;
+    z-index: -2;
 }
 
 .content {
@@ -27,19 +28,18 @@ body {
     padding: 0 2.3rem;
 }
 
-.content::before{
+.banner::after{
     content: "";
     /* display: block; */
     position: absolute;
-    top: 0.6rem;
     left: 50%;
+    bottom: -5.3rem;
     width: 140%;
     height: 5rem;
     border-radius: 50%;
     background: #3DA9FF;
     background: #F7F7F7;
     transform: translate(-50%, -50%);
-    z-index: -1;
 }
 
 .content>h3 {

@@ -22,6 +22,7 @@
         </div>
         <div class="banner">
             <img src="./landing_static/image/house_landing/banner3.png" alt="">
+            <div class="loaction" @click="showPopup">{{guest.city || guest.province}}</div>
         </div>
         <div class="content">
             <h3>发布出售消息</h3>
@@ -57,6 +58,15 @@
         <p class="copyright">版权：合肥金堡网络科技有限公司</p>
         <div class="submit_btn" @click="submit">免费咨询</div>
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+        <!-- picker弹出层 -->
+        <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+                show-toolbar
+                :columns="columns"
+                @cancel="showPicker = false"
+                @confirm="onConfirm"
+            />
+        </van-popup>
     </div>
 </body>
 
@@ -72,12 +82,15 @@
             guest: {},
             baseURL: 'http://server.yingku878.com/',
             radio: '1', //单选框默认
+            showPicker: false,
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
+            columns: [],
         },
         mounted() {
             // console.log(Array.prototype)
             this.getCity()
+            this.getAllCity()
         },
         methods: {
             // 获取省市
@@ -88,6 +101,40 @@
                 this.guest.province = province
                 this.guest.city = city
             },
+            // 获取全国并格式化数据
+            getAllCity() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        // console.log(res.data)
+                        let arr = res.data
+                        let newArr = []
+                        arr.forEach(item => {
+                            newArr.push({
+                                text: item.province,
+                                children: []
+                            })
+                        })
+                        let cityArr = []
+                        let result = []
+                        arr.forEach((item, index) => {
+                            cityArr.push(item.city)
+                            this.$set(result, index, [])
+                        })
+                        cityArr.forEach((item,index) => {
+                            item.forEach(v => {
+                                result[index].push({
+                                    text: v
+                                })
+                            })
+                        })
+                        newArr.forEach((item, index) => {
+                            item.children = result[index]
+                        })
+                        // console.log(newArr)
+                        this.columns = newArr
+                    }
+                })
+            },
             //显示提示框
             showConfim(text, time) {
                 let setTiem = time || 850
@@ -96,6 +143,17 @@
                 setTimeout(() => {
                     this.confimShow = false
                 }, setTiem)
+            },
+            // 显示picker
+            showPopup() {
+                this.showPicker = true
+            },
+            // picker选中
+            onConfirm(value) {
+                // console.log(value)
+                this.showPicker = false
+                this.guest.province = value[0]
+                this.guest.city = value[1]
             },
             // 表单提交
             submit() {
