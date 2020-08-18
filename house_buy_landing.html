@@ -13,12 +13,19 @@
 
 <body>
     <div id="app" v-cloak>
+        <div class="navbar">
+            <div class="left">
+                <a class="arrow" href="./house_landing.html"></a>
+            </div>
+            <p class="title">买房落地页</p>
+            <div class="right"></div>
+        </div>
         <div class="banner">
             <img src="./landing_static/image/house_landing/banner2.png" alt="">
         </div>
         <div class="content">
             <h3>您打算在哪里安家呢？</h3>
-            <div class="item_block">
+            <div id="area" class="item_block">
                 <div
                     :class="[areaIndex == index ? 'item on' : 'item']"
                     v-for="(item, index) in areaList"
@@ -30,7 +37,7 @@
             </div>
             <!-- <div class="show_more">查看更多</div> -->
             <h3>哪种户型与您最匹配呢？</h3>
-            <div class="item_block">
+            <div id="type" class="item_block">
                 <div
                     :class="[typeIndex == index ? 'item on' : 'item']"
                     v-for="(item, index) in typeList"
@@ -41,7 +48,7 @@
                 </div>
             </div>
             <h3>您打算花多少钱买房呢？</h3>
-            <div class="select_block" @click="showPopup">
+            <div id="cash" class="select_block" @click="showPopup">
                 <div class="cash_block">{{guest.minCash}}</div>
                 <div class="my_border"></div>
                 <div class="cash_block">{{guest.maxCash}}</div>
@@ -125,6 +132,10 @@
             // 显示picker
             showPopup() {
                 this.showPicker = true
+                document.getElementById("cash").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             // picker选中
             onConfirm(value) {
@@ -137,11 +148,19 @@
             areaCheck(index, item) {
                 this.areaIndex = index
                 this.guest.area = item.name
+                document.getElementById("area").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             // 户型切换
             typeCheck(index, item) {
                 this.typeIndex = index
                 this.guest.type = item
+                document.getElementById("type").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             //显示提示框
             showConfim(text, time) {

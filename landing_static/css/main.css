@@ -131,3 +131,29 @@ select:invalid {
 .el-input__inner {
     border: 1px solid #C2CCE4;
 }
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar>div {
+    flex: 1;
+}
+
+.navbar .left .arrow {
+    display: block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-top: 1.5px solid #333;
+    border-right: 1.5px solid #333;
+    transform: rotate(-135deg);
+    margin-left: 1rem;
+}
+
+.navbar .title {
+    font-size: 17px;
+    line-height: 2.8rem;
+    letter-spacing: 1px;
+}

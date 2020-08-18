@@ -33,7 +33,7 @@
             </div>
             <div class="flex_block">
                 <p>区域</p>
-                <div class="item_block">
+                <div id="area" class="item_block">
                     <div
                         :class="[areaIndex == index ? 'item on' : 'item']"
                         v-for="(item, index) in areaList"
@@ -47,7 +47,7 @@
             <!-- <div class="show_more">查看更多</div> -->
             <div class="flex_block">
                 <p>户型</p>
-                <div class="item_block">
+                <div id="type" class="item_block">
                     <div
                         :class="[typeIndex == index ? 'item on' : 'item']"
                         v-for="(item, index) in typeList"
@@ -60,7 +60,7 @@
             </div>
             <div class="flex_block">
                 <p>价格</p>
-                <div class="item_block">
+                <div id="cash" class="item_block">
                     <div
                         :class="[cashIndex == index ? 'item on' : 'item']"
                         v-for="(item, index) in cashList"
@@ -154,16 +154,28 @@
             areaCheck(index, item) {
                 this.areaIndex = index
                 this.guest.area = item.name
+                document.getElementById("area").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             // 户型切换
             typeCheck(index, item) {
                 this.typeIndex = index
                 this.guest.type = item
+                document.getElementById("type").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             // 价格切换
             cashCheck(index, item) {
                 this.cashIndex = index
                 this.guest.cash = item
+                document.getElementById("cash").scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                })
             },
             //显示提示框
             showConfim(text, time) {
