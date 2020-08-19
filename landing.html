@@ -130,9 +130,10 @@
                 </div>
                 <!-- 获取报价 -->
                 <div class="phone_block" v-if="showMobile==2">
-                    <p>获取报价手机号码</p>
+                    <p>报名免费量房</p>
                     <input type="tel" v-model="guest.mobile" maxlength="11" placeholder="请输入手机号码...">
-                    <div class="submit" @click="submit_mobile">免费获取</div>
+                    <p class="tips">*您提供的信息我们将严格保密，请放心填写！</p>
+                    <div class="submit" @click="submit_mobile">立即报名</div>
                 </div>
             </div>
             <div class="btn_block" v-if="showMobile<2">
@@ -169,12 +170,13 @@
             />
         </van-popup>
     </div>
+    <!-- 第三方定位 -->
+    <iframe id="geoPage" width=0 height=0 frameborder=0  style="display:none;" scrolling="no" src="https://apis.map.qq.com/tools/geolocation?key=ST4BZ-6N26P-VIKD6-LPJJN-SLMK5-RCFQM&referer=搜搜地图"></iframe>
 </body>
 
 <script src="/landing_static/js/vue.min.js"></script>
 <script src="/landing_static/js/jQuery.js"></script>
 <script src="./landing_static/js/vant.min.js"></script>
-<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
         el: '#app',
@@ -292,33 +294,23 @@
             },
             // 获取省市
             getCity() {
-                let cname = returnCitySN.cname || '全国'
-                let arr = cname.split('')
-                let value = arr.includes('区')
-                if (value) {
-                    let result = arr.includes('市')
-                    if (result) {
-                        let province = cname.split('区')[0]
-                        let city = cname.split('区')[1].split('市')[0]
-                        this.guest.province = province
-                        this.guest.city = city
-                    } else {
-                        this.guest.province = cname
-                        this.guest.city = ""
-                    }
-                } else {
-                    let result = arr.includes('省')
-                    if (result) {
-                        let province = cname.split('省')[0]
-                        let city = cname.split('省')[1].split('市')[0]
-                        this.guest.province = province
-                        this.guest.city = city
-                    } else {
-                        // this.showConfim('定位失败')
-                        this.guest.province = ""
-                        this.guest.city = ""
-                    }
-                }
+                this.sendAddress().then(result => {
+                    // console.log(result)
+                    this.guest.province = result.province.split('省')[0]
+                    this.guest.city = result.city.split('市')[0]
+                }).catch(error => {
+                    // this.showConfim('定位失败')
+                    this.showPicker = true
+                })
+            },
+            // 第三方获取城市传值
+            async sendAddress() {
+                return new Promise(resolve => {
+                    window.addEventListener('message', function(event) {
+                        var loc = event.data;
+                        loc ? resolve(loc) : false
+                    }, false);
+                })
             },
             // 获取全国并格式化数据
             getAllCity() {
