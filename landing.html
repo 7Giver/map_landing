@@ -5,12 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>地图落地页</title>
+    <link rel="stylesheet" href="./landing_static/css/vant.css">
     <link rel="stylesheet" href="/landing_static/css/main.css">
     <link rel="stylesheet" href="/landing_static/css/index.css">
 </head>
 
 <body>
     <div id="app" v-cloak>
+        <div class="loaction" @click="showPopup">{{guest.city || '全国'}}</div>
         <div class="container">
             <div class="left">
                 <div class="title">
@@ -157,11 +159,21 @@
                 </div>
             </div>
         </div>
+        <!-- picker弹出层 -->
+        <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+                show-toolbar
+                :columns="columns"
+                @cancel="showPicker = false"
+                @confirm="onConfirm"
+            />
+        </van-popup>
     </div>
 </body>
 
 <script src="/landing_static/js/vue.min.js"></script>
 <script src="/landing_static/js/jQuery.js"></script>
+<script src="./landing_static/js/vant.min.js"></script>
 <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
@@ -174,6 +186,7 @@
             areaList: [], //省市数据
             cityList: [], //市级数据
             checkList: [], //省级对应的市级数据
+            columns: [],
             acreageIndex: 0,
             styleIndex: 0,
             showMobile: 0, //移动端内容显示
@@ -242,6 +255,7 @@
             realMobile: false, //真实手机号
             noName: false, //有无姓名
             showDialog: false, //弹窗显示
+            showPicker: false,  //选择城市
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
             baseURL: 'http://server.yingku878.com/',
@@ -253,6 +267,7 @@
             this.getVisits()
             this.getAreaList()
             this.getCity()
+            this.getAllCity()
         },
         beforeDestroy() {
             clearInterval(myRandom)
@@ -277,7 +292,7 @@
             },
             // 获取省市
             getCity() {
-                let cname = returnCitySN.cname
+                let cname = returnCitySN.cname || '全国'
                 let arr = cname.split('')
                 let value = arr.includes('区')
                 if (value) {
@@ -298,8 +313,46 @@
                         let city = cname.split('省')[1].split('市')[0]
                         this.guest.province = province
                         this.guest.city = city
+                    } else {
+                        // this.showConfim('定位失败')
+                        this.guest.province = ""
+                        this.guest.city = ""
                     }
                 }
+            },
+            // 获取全国并格式化数据
+            getAllCity() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        // console.log(res.data)
+                        let arr = res.data
+                        let newArr = []
+                        arr.forEach(item => {
+                            newArr.push({
+                                text: item.province,
+                                children: []
+                            })
+                        })
+                        let cityArr = []
+                        let result = []
+                        arr.forEach((item, index) => {
+                            cityArr.push(item.city)
+                            this.$set(result, index, [])
+                        })
+                        cityArr.forEach((item,index) => {
+                            item.forEach(v => {
+                                result[index].push({
+                                    text: v
+                                })
+                            })
+                        })
+                        newArr.forEach((item, index) => {
+                            item.children = result[index]
+                        })
+                        // console.log(newArr)
+                        this.columns = newArr
+                    }
+                })
             },
             // 获取访问量
             getVisits() {
@@ -405,6 +458,17 @@
             confirm() {
                 this.showDialog = false
             },
+            // 显示地区选择picker
+            showPopup() {
+                this.showPicker = true
+            },
+            // picker选中
+            onConfirm(value) {
+                // console.log(value)
+                this.showPicker = false
+                this.guest.province = value[0]
+                this.guest.city = value[1]
+            },
             // 切换面积
             acreageCheck(item,index) {
                 // console.log(item);
@@ -440,6 +504,10 @@
             },
             // 移动端表单提交
             submit_mobile() {
+                if (!this.guest.city) {
+                    this.showConfim('请选择城市')
+                    return false
+                }
                 if (!this.guest.mobile) {
                     this.showConfim('请输入手机号')
                     return false

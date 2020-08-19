@@ -22,7 +22,7 @@
         </div>
         <div class="banner">
             <img src="./landing_static/image/house_landing/banner3.png" alt="">
-            <div class="loaction" @click="showPopup">{{guest.city || guest.province}}</div>
+            <div class="loaction" @click="showPopup">{{guest.city || '全国'}}</div>
         </div>
         <div class="content">
             <h3>发布出售消息</h3>
@@ -96,10 +96,32 @@
             // 获取省市
             getCity() {
                 let cname = returnCitySN.cname
-                let province = cname.split('省')[0]
-                let city = cname.split('省')[1].split('市')[0]
-                this.guest.province = province
-                this.guest.city = city
+                let arr = cname.split('')
+                let value = arr.includes('区')
+                if (value) {
+                    let result = arr.includes('市')
+                    if (result) {
+                        let province = cname.split('区')[0]
+                        let city = cname.split('区')[1].split('市')[0]
+                        this.guest.province = province
+                        this.guest.city = city
+                    } else {
+                        this.guest.province = cname
+                        this.guest.city = ""
+                    }
+                } else {
+                    let result = arr.includes('省')
+                    if (result) {
+                        let province = cname.split('省')[0]
+                        let city = cname.split('省')[1].split('市')[0]
+                        this.guest.province = province
+                        this.guest.city = city
+                    } else {
+                        // this.showConfim('定位失败')
+                        this.guest.province = ""
+                        this.guest.city = ""
+                    }
+                }
             },
             // 获取全国并格式化数据
             getAllCity() {
