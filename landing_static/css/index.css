@@ -321,7 +321,7 @@ select {
 
 .copyright {
     position: absolute;
-    bottom: 1.8rem;
+    bottom: 5%;
     color: #fff;
     font-size: 15px;
     white-space: nowrap;
@@ -340,11 +340,15 @@ select {
         display: none;
     }
 
+    .loaction {
+        display: flex !important;
+    }
+
     .mobile_block {
         display: block !important;
         position: relative;
         width: 85%;
-        margin-top: 8rem;
+        margin-top: 26%;
     }
 
     .mobile_block::before {

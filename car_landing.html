@@ -24,7 +24,7 @@
                     <el-input v-model="ruleForm.type" placeholder="请输入您的车型"></el-input>
                 </el-form-item>
                 <el-form-item label="您的需求" prop="demand">
-                    <el-select v-model="ruleForm.demand" placeholder="请选择活动区域">
+                    <el-select v-model="ruleForm.demand" placeholder="请选择类型">
                         <el-option label="汽车检修" value="汽车检修"></el-option>
                         <el-option label="汽车美容" value="汽车美容"></el-option>
                         <el-option label="升级改装" value="升级改装"></el-option>
@@ -42,7 +42,37 @@
                 <div class="submit_btn"  @click="submitForm('ruleForm')">全城比价 领取体验券</div>
             </el-form>
         </div>
+        <div class="mobile_block" style="display: none;">
+            <div class="banner">
+                <p>汽修商家联盟</p>
+                <img src="./landing_static/image/banner_m.png" alt="">
+            </div>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="您的车型" prop="type">
+                    <el-input v-model="ruleForm.type" placeholder="请输入您的车型"></el-input>
+                </el-form-item>
+                <el-form-item label="您的需求" prop="demand">
+                    <el-select v-model="ruleForm.demand" placeholder="请选择类型">
+                        <el-option label="汽车检修" value="汽车检修"></el-option>
+                        <el-option label="汽车美容" value="汽车美容"></el-option>
+                        <el-option label="升级改装" value="升级改装"></el-option>
+                        <el-option label="汽车保养" value="汽车保养"></el-option>
+                        <el-option label="配件更换" value="配件更换"></el-option>
+                        <el-option label="其他" value="其他"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="您的号码" prop="phone">
+                    <el-input v-model="ruleForm.phone" maxlength="11" placeholder="请输入您的手机号"></el-input>
+                </el-form-item>
+                <el-form-item label="您的姓名" prop="name">
+                    <el-input v-model="ruleForm.name" placeholder="请输入您的姓名"></el-input>
+                </el-form-item>
+            </el-form>
+            <div class="submit_btn"  @click="submitForm_m('ruleForm')">全城比价 领取体验券</div>
+        </div>
         <p class="copyright">版权：合肥金堡网络科技有限公司</p>
+        <!-- 移动端提示 -->
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
         <!-- 弹窗 -->
         <div class="modal-bg" v-show="showDialog">
             <div class="modal-container">
@@ -72,6 +102,8 @@
         data: {
             guest: {},
             showDialog: false, //弹窗显示
+            confimShow: false, //提示框显示
+            confim_text: '', //提示框信息
             baseURL: 'http://server.yingku878.com/',
             ruleForm: {
                 type: '',
@@ -88,12 +120,12 @@
                     { required: true, message: '请选择您的需求', trigger: 'change' }
                 ],
                 phone: [
-                    { required: true, trigger: 'blur' },
+                    { required: true, message: '请输入您的手机号', trigger: 'blur' },
                     { pattern: /^1[3|4|5|6|7|8|9]\d{9}$/, message: '输入正确手机号', trigger: 'blur',},
                 ],
                 name: [
                     { required: true, message: '请输入您的姓名', trigger: 'blur' },
-                    { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+                    { min: 2, max: 6, message: '长度在 2 到 6 个字符', trigger: 'blur' }
                 ],
             }
         },
@@ -113,6 +145,15 @@
             confirm() {
                 this.showDialog = false
             },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -120,8 +161,8 @@
                             type: 3, //类型：1--装修，2--餐饮，3--汽修，14--房产
                             name: this.ruleForm.name,
                             mobile: this.ruleForm.phone,
-                            province: this.guest.province,
-                            city: this.guest.city,
+                            province: this.guest.province || '',
+                            city: this.guest.city || '全国',
                             car: this.ruleForm.type,
                             requirement: this.ruleForm.demand
                         }
@@ -136,7 +177,43 @@
                             success: (res) => {
                                 // console.log(res)
                                 this.showDialog = true
-                                this.$refs[formName].resetFields();
+                                // this.$refs[formName].resetFields();
+                            },
+                            error: (errore) => {
+                                // console.log(errore);
+                            }
+                        });
+                    } else {
+                        // console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
+            //移动端表单
+            submitForm_m(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let obj = {
+                            type: 3, //类型：1--装修，2--餐饮，3--汽修，14--房产
+                            name: this.ruleForm.name,
+                            mobile: this.ruleForm.phone,
+                            province: this.guest.province || '',
+                            city: this.guest.city || '全国',
+                            car: this.ruleForm.type,
+                            requirement: this.ruleForm.demand
+                        }
+                        // console.log(obj)
+                        // return false
+                        $.ajax({
+                            url: `${this.baseURL}?r=api/user/customer`,
+                            type: "post",
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(obj),
+                            dataType: "json",
+                            success: (res) => {
+                                // console.log(res)
+                                this.showConfim('提交成功')
+                                // this.$refs[formName].resetFields();
                             },
                             error: (errore) => {
                                 // console.log(errore);

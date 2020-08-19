@@ -1,8 +1,7 @@
 #app {
     position: relative;
-    min-width: 1400px;
     height: 100vh;
-    background: url("../image/banner.png") no-repeat center / 100%;
+    background: url("../image/banner.png") no-repeat center / 100% 100%;
 }
 
 .header {
@@ -115,9 +114,79 @@
 .copyright {
     position: absolute;
     left: 50%;
-    bottom: 0.5rem;
+    bottom: 3.6%;
     transform: translate(-50%, -50%);
     color: #666;
     font-size: 15px;
     white-space: nowrap;
+}
+
+/* 移动端适配 */
+
+@media screen and (max-width: 960px) {
+    #app {
+        position: relative;
+        max-width: 750px;
+        margin: 0 auto;
+        background: #fff;
+    }
+
+    #app .content {
+        display: none;
+    }
+
+    .header {
+        display: none;
+    }
+
+    .mobile_block {
+        display: block !important;
+        height: 100%;
+    }
+
+    .mobile_block .banner>img {
+        display: block;
+        width: 100%;
+    }
+
+    .mobile_block .banner>p {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: #fff;
+        font-size: 1rem;
+        line-height: 2.4rem;
+        letter-spacing: 1px;
+        font-weight: 200;
+        padding-left: 2rem;
+        background: #1f2741;
+        opacity: 0.8;
+    }
+
+    .mobile_block .el-form {
+        padding-top: 2.4rem;
+        padding-right: 2rem;
+    }
+
+    .mobile_block .submit_btn {
+        width: 85%;
+        margin: 0 auto;
+        color: #fff;
+        margin-top: 2.6rem;
+        font-size: 1.2rem;
+        line-height: 3rem;
+        letter-spacing: 1px;
+        text-align: center;
+        border-radius: 4rem;
+        background: linear-gradient(90deg, #1584FE, #41A8FE);
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .mobile_block .submit_btn {
+        font-size: 1rem;
+        line-height: 2.6rem;
+        margin-top: -3%;
+    }
 }
