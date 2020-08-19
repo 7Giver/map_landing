@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>地图落地页</title>
     <link rel="stylesheet" href="/landing_static/css/main.css">
     <link rel="stylesheet" href="/landing_static/css/index.css">
@@ -54,27 +54,15 @@
                         <div :class="[noStyle ? 'input_block warn' : 'input_block']">
                             <select v-model="styleSelected" @change="styleChange" required>
                                 <option value="" selected>请选择装修风格</option>
-                                <option>现代简约风</option>
+                                <option>现代简约</option>
+                                <option>简约风格</option>
                                 <option>田园风格</option>
-                                <option>中式风格</option>
                                 <option>欧式风格</option>
+                                <option>中式风格</option>
                             </select>
                             <div v-if="noStyle" class="warning">请选择装修风格</div>
                         </div>
                     </div>
-                    <!-- <div class="item">
-                        <div class="label">房屋类型</div>
-                        <div class="radio_block">
-                            <div @click="checkItem(0)">
-                                <img src="/landing_static/image/on.png" alt="">
-                                <p>新房</p>
-                            </div>
-                            <div @click="checkItem(1)">
-                                <img src="/landing_static/image/off.png" alt="">
-                                <p>二手房/老房</p>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="item">
                         <div class="label">手机号码</div>
                         <div :class="[noMobile || realMobile ? 'input_block warn' : 'input_block']">
@@ -112,7 +100,47 @@
                 </div>
             </div>
         </div>
+        <!-- 手机适配 -->
+        <div class="mobile_block" style="display: none;">
+            <div class="content">
+                <div class="title">
+                    <span v-if="showMobile==0">您的户型</span>
+                    <span v-if="showMobile==1">装修风格</span>
+                    <span v-if="showMobile==2">获取报价</span>
+                </div>
+                <!-- 房屋面积 -->
+                <div class="area_block" v-if="showMobile==0">
+                    <div class="area_item" v-for="(item, index) in acreage" :key="index">
+                        <div :class="{'on': acreageIndex == index}" @click="acreageCheck(item,index)">
+                            <p>{{item.text}}</p>
+                            <p>{{item.font}}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 装修风格 -->
+                <div class="style_block" v-if="showMobile==1">
+                    <div class="style_item" v-for="(item, index) in houseStyle" :key="index">
+                        <div :class="{'on': styleIndex == index}" @click="styleCheck(item.title,index)">
+                            <img :src="item.img" alt="">
+                            <p>{{item.title}}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 获取报价 -->
+                <div class="phone_block" v-if="showMobile==2">
+                    <p>获取报价手机号码</p>
+                    <input type="tel" v-model="guest.mobile" maxlength="11" placeholder="请输入手机号码...">
+                    <div class="submit" @click="submit_mobile">免费获取</div>
+                </div>
+            </div>
+            <div class="btn_block" v-if="showMobile<2">
+                <div class="prev" @click="goPrev">上一步</div>
+                <div class="next" @click="goNext">下一步</div>
+            </div>
+        </div>
         <p class="copyright">版权：合肥金堡网络科技有限公司</p>
+        <!-- 移动端提示 -->
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
         <!-- 弹窗 -->
         <div class="modal-bg" v-show="showDialog">
             <div class="modal-container">
@@ -134,14 +162,69 @@
 
 <script src="/landing_static/js/vue.min.js"></script>
 <script src="/landing_static/js/jQuery.js"></script>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            guest: {}, //表单信息对象
+            guest: {
+                m_area: '60平以下',
+                m_style: '现代简约'
+            }, //表单信息对象
             areaList: [], //省市数据
             cityList: [], //市级数据
             checkList: [], //省级对应的市级数据
+            acreageIndex: 0,
+            styleIndex: 0,
+            showMobile: 0, //移动端内容显示
+            acreage: [
+                {
+                    text: '60平',
+                    font: '以下'
+                },
+                {
+                    text: '60平~',
+                    font: '80平'
+                },
+                {
+                    text: '80平~',
+                    font: '100平'
+                },
+                {
+                    text: '100平~',
+                    font: '150平'
+                },
+                {
+                    text: '150平~',
+                    font: '200平'
+                },
+                {
+                    text: '200平',
+                    font: '以上'
+                },
+            ],
+            houseStyle: [
+                {
+                    img: './landing_static/image/select_item1.png',
+                    title: '现代简约'
+                },
+                {
+                    img: './landing_static/image/select_item2.png',
+                    title: '简约风格'
+                },
+                {
+                    img: './landing_static/image/select_item3.png',
+                    title: '田园风格'
+                },
+                {
+                    img: './landing_static/image/select_item4.png',
+                    title: '欧式风格'
+                },
+                {
+                    img: './landing_static/image/select_item5.png',
+                    title: '中式风格'
+                },
+            ],
             areaSelected: '', //选择的省级
             citySelected: '', //选择的市级
             styleSelected: '', //选择的装修风格
@@ -159,8 +242,9 @@
             realMobile: false, //真实手机号
             noName: false, //有无姓名
             showDialog: false, //弹窗显示
+            confimShow: false, //提示框显示
+            confim_text: '', //提示框信息
             baseURL: 'http://server.yingku878.com/',
-            message: 'Hello Vue!'
         },
         mounted() {
             var myRandom = setInterval(() => {
@@ -168,6 +252,7 @@
             }, 300)
             this.getVisits()
             this.getAreaList()
+            this.getCity()
         },
         beforeDestroy() {
             clearInterval(myRandom)
@@ -189,6 +274,32 @@
                         this.citySelected = this.checkList[0]
                     }
                 })
+            },
+            // 获取省市
+            getCity() {
+                let cname = returnCitySN.cname
+                let arr = cname.split('')
+                let value = arr.includes('区')
+                if (value) {
+                    let result = arr.includes('市')
+                    if (result) {
+                        let province = cname.split('区')[0]
+                        let city = cname.split('区')[1].split('市')[0]
+                        this.guest.province = province
+                        this.guest.city = city
+                    } else {
+                        this.guest.province = cname
+                        this.guest.city = ""
+                    }
+                } else {
+                    let result = arr.includes('省')
+                    if (result) {
+                        let province = cname.split('省')[0]
+                        let city = cname.split('省')[1].split('市')[0]
+                        this.guest.province = province
+                        this.guest.city = city
+                    }
+                }
             },
             // 获取访问量
             getVisits() {
@@ -293,6 +404,75 @@
             // 弹窗确认
             confirm() {
                 this.showDialog = false
+            },
+            // 切换面积
+            acreageCheck(item,index) {
+                // console.log(item);
+                this.acreageIndex = index
+                let area = item.text+item.font
+                this.guest.m_area = area
+            },
+            // 切换风格
+            styleCheck(item,index) {
+                this.styleIndex = index
+                this.guest.m_style = item
+            },
+            // 移动端点击下一步
+            goPrev() {
+                this.showMobile > 0
+                    ? this.showMobile = this.showMobile*1-1
+                    : false
+            },
+            // 移动端点击下一步
+            goNext() {
+                this.showMobile < 2
+                    ? this.showMobile = this.showMobile*1+1
+                    : false
+            },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
+            // 移动端表单提交
+            submit_mobile() {
+                if (!this.guest.mobile) {
+                    this.showConfim('请输入手机号')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.mobile))) {
+                    this.showConfim('请输入正确的手机号')
+                    return false
+                }
+                let obj = {
+                    name: '',
+                    mobile: this.guest.mobile,
+                    province: this.guest.province,
+                    city: this.guest.city,
+                    area: this.guest.m_area,
+                    style: this.guest.m_style,
+                    type: 1
+                }
+                // console.log(obj)
+                // return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
             },
             // 表单提交
             submit() {
