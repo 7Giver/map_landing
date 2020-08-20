@@ -114,10 +114,10 @@
 .copyright {
     position: absolute;
     left: 50%;
-    bottom: 2.5%;
+    bottom: 1.7%;
     transform: translate(-50%, -50%);
     color: #666;
-    font-size: 15px;
+    font-size: 0.84rem;
     white-space: nowrap;
 }
 
@@ -165,15 +165,19 @@
     }
 
     .mobile_block .el-form {
-        padding-top: 2.4rem;
+        padding-top: 1.5rem;
         padding-right: 2rem;
+    }
+
+    .mobile_block .el-form-item {
+        margin-bottom: 1.1rem;
     }
 
     .mobile_block .submit_btn {
         width: 85%;
         margin: 0 auto;
         color: #fff;
-        margin-top: 2.6rem;
+        margin-top: 2rem;
         font-size: 1.2rem;
         line-height: 3rem;
         letter-spacing: 1px;

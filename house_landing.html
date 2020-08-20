@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>租房落地页</title>
     <link rel="stylesheet" href="./landing_static/css/element-ui.css">
     <link rel="stylesheet" href="./landing_static/css/vant.css">
@@ -77,6 +77,7 @@
             <h3>怎么联系您呢？</h3>
             <div class="input_block">
                 <el-input type="tel" v-model="guest.phone" maxlength="11" placeholder="请输入您的手机号码"></el-input>
+                <el-input type="text" v-model="guest.name" maxlength="11" placeholder="请输入您的姓名（可不填）"></el-input>
             </div>
             <p class="copyright">版权：合肥金堡网络科技有限公司</p>
         </div>
@@ -286,7 +287,7 @@
                 let obj = {
                     type: 14, //类型：1--装修，2--餐饮，3--汽修，14--房产
                     house_type: '租房',
-                    name: '',
+                    name: this.guest.name || '',
                     mobile: this.guest.phone,
                     province: this.guest.province,
                     city: this.guest.city,

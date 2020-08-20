@@ -132,6 +132,7 @@
                 <div class="phone_block" v-if="showMobile==2">
                     <p>报名免费量房</p>
                     <input type="tel" v-model="guest.mobile" maxlength="11" placeholder="请输入手机号码...">
+                    <input type="text" v-model="guest.name" maxlength="11" placeholder="请输入您的姓名（可不填）">
                     <p class="tips">*您提供的信息我们将严格保密，请放心填写！</p>
                     <div class="submit" @click="submit_mobile">立即报名</div>
                 </div>
@@ -509,7 +510,7 @@
                     return false
                 }
                 let obj = {
-                    name: '',
+                    name: this.guest.name || '',
                     mobile: this.guest.mobile,
                     province: this.guest.province,
                     city: this.guest.city,
