@@ -5,7 +5,7 @@
     height: 100vh;
     margin: 0 auto;
     /* max-width: 1200px; */
-    background: url("/landing_static/image/background.png") no-repeat center /
+    background: url("../image/background.png") no-repeat center /
         100% 100%;
 }
 
@@ -334,7 +334,7 @@ select {
         position: relative;
         max-width: 750px;
         margin: 0 auto;
-        background: url("/landing_static/image/bg.png") no-repeat center / 100% 100%;
+        background: url("../image/bg.png") no-repeat center / 100% 100%;
     }
 
     .container {
@@ -371,7 +371,7 @@ select {
         font-size: 1.3rem;
         letter-spacing: 1.5px;
         padding: .25rem 7% .95rem;
-        background: url('/landing_static/image/title.png') no-repeat center / 100% 100%;
+        background: url('../image/title.png') no-repeat center / 100% 100%;
     }
 
     .mobile_block .content {

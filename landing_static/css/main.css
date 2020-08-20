@@ -129,7 +129,6 @@ select:invalid {
 /* element选择框 */
 
 .el-input__inner {
-    line-height: 0;
     border: 1px solid #C2CCE4;
 }
 
