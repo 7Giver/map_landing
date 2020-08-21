@@ -299,9 +299,7 @@
                     // console.log(result)
                     this.guest.province = result.province.split('省')[0]
                     this.guest.city = result.city.split('市')[0]
-                }).catch(error => {
-                    // this.showConfim('定位失败')
-                    this.showPicker = true
+                    !this.guest.city ? this.showPicker = true : ''
                 })
             },
             // 第三方获取城市传值

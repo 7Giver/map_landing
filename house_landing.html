@@ -44,7 +44,6 @@
                     >
                         {{item.name}}
                     </div>
-                    <p v-if="areaList.length==0">定位失败</p>
                 </div>
             </div>
             <!-- <div class="show_more">查看更多</div> -->
@@ -145,10 +144,8 @@
                     // console.log(result)
                     this.guest.province = result.province.split('省')[0]
                     this.guest.city = result.city.split('市')[0]
+                    !this.guest.city ? this.showPicker = true : ''
                     this.getAreaList()
-                }).catch(error => {
-                    // this.showConfim('定位失败')
-                    this.showPicker = true
                 })
             },
             // 第三方获取城市传值
