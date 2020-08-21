@@ -44,6 +44,7 @@
                     >
                         {{item.name}}
                     </div>
+                    <p v-if="areaList.length==0">暂无区域</p>
                 </div>
             </div>
             <!-- <div class="show_more">查看更多</div> -->
@@ -100,6 +101,10 @@
 <script src="./landing_static/js/jQuery.js"></script>
 <script src="./landing_static/js/element-ui.js"></script>
 <script src="./landing_static/js/vant.min.js"></script>
+<script src="./landing_static/js/vconsole.min.js"></script>
+<script>
+//   var vConsole = new VConsole();
+</script>
 <script>
     var app = new Vue({
         el: '#app',
@@ -140,22 +145,20 @@
         methods: {
             // 获取省市
             getCity() {
-                this.sendAddress().then(result => {
-                    // console.log(result)
-                    this.guest.province = result.province.split('省')[0]
-                    this.guest.city = result.city.split('市')[0]
-                    !this.guest.city ? this.showPicker = true : ''
-                    this.getAreaList()
-                })
-            },
-            // 第三方获取城市传值
-            async sendAddress() {
-                return new Promise(resolve => {
-                    window.addEventListener('message', function(event) {
-                        var loc = event.data;
-                        loc ? resolve(loc) : false
-                    }, false);
-                })
+                var that = this
+                window.addEventListener('message', function(event) {
+                    if (event.data) {
+                        // console.log(event.data);
+                        let loc = event.data;
+                        if (loc.city) {
+                            that.guest.province = loc.province.split('省')[0]
+                            that.guest.city = loc.city.split('市')[0]
+                            that.getAreaList()
+                        } else {
+                            that.showPicker = true
+                        }
+                    }
+                }, false);
             },
             // 根据省市获取区级
             getAreaList() {
