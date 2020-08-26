@@ -210,3 +210,12 @@ select:invalid {
     font-size: 0.8rem;
     margin-top: 1rem;
 }
+
+#nb_icon_wrap {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+}
+
+#newBridge .nb-icon-wrap-1 .nb-icon-wrap-base {
+    background-size: 40px !important;
+}
