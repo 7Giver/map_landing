@@ -194,3 +194,10 @@
         margin-top: -3%;
     }
 }
+
+.tips {
+    color: #999;
+    text-align: center;
+    padding-left: 3rem;
+    font-size: 0.8rem;
+}

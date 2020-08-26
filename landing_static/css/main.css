@@ -203,3 +203,10 @@ select:invalid {
     margin-left: 0.42rem;
     margin-bottom: 0.30rem;
 }
+
+.tips {
+    color: #999;
+    text-align: center;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}

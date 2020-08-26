@@ -46,7 +46,7 @@ body {
     font-size: 21px;
     font-weight: 600;
     letter-spacing: 1px;
-    margin: 0 auto 1.8rem;
+    margin: 0 auto 1.3rem;
 }
 
 .content .my_block {
@@ -118,7 +118,7 @@ body {
 .copyright {
     position: absolute;
     left: 50%;
-    bottom: 5rem;
+    bottom: 4rem;
     transform: translate(-50%, -50%);
     color: #666;
     font-size: 13px;

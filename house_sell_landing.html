@@ -7,8 +7,8 @@
     <title>售房落地页</title>
     <link rel="stylesheet" href="./landing_static/css/element-ui.css">
     <link rel="stylesheet" href="./landing_static/css/vant.css">
-    <link rel="stylesheet" href="./landing_static/css/main.css">
-    <link rel="stylesheet" href="./landing_static/css/house_sell_landing.css">
+    <link rel="stylesheet" href="./landing_static/css/main.css?v=7">
+    <link rel="stylesheet" href="./landing_static/css/house_sell_landing.css?v=7">
 </head>
 
 <body>
@@ -55,6 +55,7 @@
                 <el-input v-model="guest.phone" placeholder="请填写联系电话"></el-input>
             </div>
         </div>
+        <p class="tips">*您提供的信息我们将严格保密，请放心填写！</p>
         <p class="copyright">版权：合肥金堡网络科技有限公司</p>
         <div class="submit_btn" @click="submit">免费咨询</div>
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>

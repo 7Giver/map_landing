@@ -119,6 +119,7 @@
 select {
     color: #333;
     width: 100%;
+    font-size: 14px;
     padding: 9px 10px;
     overflow: hidden;
     white-space: nowrap;
@@ -493,6 +494,7 @@ select {
     .mobile_block .content .phone_block .tips {
         color: #999;
         font-size: 0.8rem;
+        margin: 0;
         margin-bottom: 1rem;
     }
 
