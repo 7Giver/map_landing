@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>保险定制</title>
+    <link rel="stylesheet" href="./landing_static/css/main.css?v=8">
+    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css">
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div id="block1">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您好，我是保险顾问，很高兴能为您服务，请问您想为谁购买保险？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <ul class="sel_box">
+                    <li
+                        :class="{on: checkIndex == index}"
+                        v-for="(item, index) in people"
+                        :key="index"
+                        @click="checkGuest(item, index)"
+                    >
+                        <img :src="item.avatar" alt="">
+                        <p>{{item.title}}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="block2" v-show="showblock2">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您想为<span class="m_name">{{guest.name}}</span>购买什么样类型的保险呢？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <ul class="sel_box">
+                    <li v-for="(item, index) in insurance" :key="index">
+                        <img :src="url+(index+1)+'.png'" alt="">
+                        <p>{{item}}险</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- <select name="" id="">
+            <option value="">江苏</option>
+            <option value="">浙江</option>
+            <option value="">四川</option>
+            <option value="">湖北</option>
+        </select> -->
+    </div>
+    <!-- 第三方定位 -->
+    <iframe id="geoPage" width=0 height=0 frameborder=0 style="display:none;" scrolling="no"
+        src="https://apis.map.qq.com/tools/geolocation?key=ST4BZ-6N26P-VIKD6-LPJJN-SLMK5-RCFQM&referer=搜搜地图"></iframe>
+</body>
+
+<script src="./landing_static/js/vue.min.js"></script>
+<script src="./landing_static/js/jQuery.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            guest: {},
+            checkIndex: null,
+            showblock2: false,
+            adviser: './landing_static/image/insurance_landing/adviser.png',
+            me: './landing_static/image/insurance_landing/me.png',
+            url: './landing_static/image/insurance_landing/pic',
+            insurance: ['人寿','健康','意外','财产','旅游'],
+            people: [{
+                    avatar: './landing_static/image/insurance_landing/me.png',
+                    title: '自己'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/husband.png',
+                    title: '丈夫'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/wife.png',
+                    title: '妻子'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/father.png',
+                    title: '父亲'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/mother.png',
+                    title: '母亲'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/daughter.png',
+                    title: '女儿'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/son.png',
+                    title: '儿子'
+                },
+            ],
+        },
+        mounted() {
+            this.getCity()
+        },
+        methods: {
+            // 获取省市
+            getCity() {
+                this.sendAddress().then(result => {
+                    // console.log(result)
+                    this.guest.province = result.province.split('省')[0]
+                    this.guest.city = result.city.split('市')[0]
+                    console.log(this.guest);
+                })
+            },
+            // 第三方获取城市传值
+            async sendAddress() {
+                return new Promise(resolve => {
+                    window.addEventListener('message', function (event) {
+                        var loc = event.data;
+                        loc ? resolve(loc) : false
+                    }, false);
+                })
+            },
+            // 选中投保人
+            checkGuest(item, index) {
+                console.log(item, index);
+                this.checkIndex = index
+                this.guest.name = item.title
+                this.showblock2 = true
+            },
+        }
+    })
+</script>
+
+</html>
