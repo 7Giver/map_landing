@@ -38,12 +38,99 @@
             </div>
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
-                <ul class="sel_box">
-                    <li v-for="(item, index) in insurance" :key="index">
+                <ul class="sel_box sel_box2">
+                    <li 
+                        :class="{on: item.check}"
+                        v-for="(item, index) in insurance"
+                        :key="index"
+                        @click="checkInsurance(item, index)"
+                    >
                         <img :src="url+(index+1)+'.png'" alt="">
-                        <p>{{item}}险</p>
+                        <p>{{item.title}}险</p>
+                    </li>
+                    <li>
+                        <div class="submit_btn" @click="_insurance">确定</div>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div id="block3" v-show="showblock3">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您<span class="m_name">{{guest.name}}</span>有社保吗？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all sel_box_3">
+                    <span data-data="1" :class="{active: socialIndex==1}" @click="checkSocial">有</span>
+                    <span data-data="0" :class="{active: socialIndex==0}" @click="checkSocial">没有</span>
+                </div>    
+            </div>
+        </div>
+        <div id="block4" v-show="showblock4">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">请问您<span class="m_name">{{guest.name}}</span>的出生年份</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all sel_box_4">
+                    <select id="year" name="year">
+                        <option
+                            v-for="(item, index) in yearSpan"
+                            :value="yearStart+index"
+                            :key="index"
+                            :selected="(yearStart+index)==yearDefault"
+                        >
+                            {{yearStart+index}}
+                        </option>
+                    </select>
+                    <span class="age_sure" @click="showblock5=true">确定</span>
+                </div>    
+            </div>
+        </div>
+        <div id="block5" v-show="showblock5">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="sel_box fill_box">
+                    <div class="fill_msg"><input type="text" name="name" id="name" placeholder="姓名" /></div>
+                    <div class="fill_msg"><input type="tel" name="tel" id="tel" placeholder="电话" /></div>
+                    <div class="fill_msg">
+                        <select name="province_s" id="province" onChange="_area(this)">
+                          <option value="">请选择省份</option>
+                            <volist name="province" id="vo">
+                                
+                            </volist>
+                        </select> 
+                    </div>
+                    <div class="fill_msg">
+                        <select name="city_s" id="city">
+                            <option value="">请选择城市</option>
+                            <volist name="city" id="vo">
+                                
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="sure" id="fll_sure" @click="submit_mobile">确定</div>
+                </div>
+            </div>
+        </div>
+        <div id="block6" v-show="showblock5">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <div class="fl ask_word">收到，我会尽快与您联系，请保持通讯畅通哦～</div>
+            </div>
+            <!-- <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all">
+                    <span class="good">好的</span>
+                </div>    
+            </div> -->
+            <div style="font-size:10px;color:#989898;padding:10px 3%;">隐私提示：您同意将您在本网站留下任何个人信息授权本公司向特定的或者不特定的第三人公开此信息，以便为您寻找最符合您需求的客户经理，不会用作其他用途。
             </div>
         </div>
         <!-- <select name="" id="">
@@ -52,6 +139,8 @@
             <option value="">四川</option>
             <option value="">湖北</option>
         </select> -->
+        <!-- 移动端提示 -->
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
     </div>
     <!-- 第三方定位 -->
     <iframe id="geoPage" width=0 height=0 frameborder=0 style="display:none;" scrolling="no"
@@ -66,38 +155,85 @@
         data: {
             guest: {},
             checkIndex: null,
+            socialIndex: null,
             showblock2: false,
+            showblock3: false,
+            showblock4: false,
+            showblock5: false,
+            showblock6: false,
+            yearSpan: null, // 出生年份跨度
+            yearStart: null,
+            yearDefault: null,
+            confimShow: false,
+            baseURL: 'http://server.yingku878.com/', //接口请求地址
             adviser: './landing_static/image/insurance_landing/adviser.png',
             me: './landing_static/image/insurance_landing/me.png',
             url: './landing_static/image/insurance_landing/pic',
-            insurance: ['人寿','健康','意外','财产','旅游'],
+            insurance: [
+                {
+                    title: '人寿'
+                },
+                {
+                    title: '健康'
+                },
+                {
+                    title: '意外'
+                },
+                {
+                    title: '财产'
+                },
+                {
+                    title: '旅游'
+                },
+            ],
             people: [{
                     avatar: './landing_static/image/insurance_landing/me.png',
-                    title: '自己'
+                    title: '自己',
+                    yearSpan: 46,
+                    yearStart: 1950,
+                    yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/husband.png',
-                    title: '丈夫'
+                    title: '丈夫',
+                    yearSpan: 46,
+                    yearStart: 1950,
+                    yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/wife.png',
-                    title: '妻子'
+                    title: '妻子',
+                    yearSpan: 46,
+                    yearStart: 1950,
+                    yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/father.png',
-                    title: '父亲'
+                    title: '父亲',
+                    yearSpan: 31,
+                    yearStart: 1950,
+                    yearDefault: 1965
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/mother.png',
-                    title: '母亲'
+                    title: '母亲',
+                    yearSpan: 31,
+                    yearStart: 1950,
+                    yearDefault: 1965
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/daughter.png',
-                    title: '女儿'
+                    title: '女儿',
+                    yearSpan: 48,
+                    yearStart: 1970,
+                    yearDefault: 2010
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/son.png',
-                    title: '儿子'
+                    title: '儿子',
+                    yearSpan: 48,
+                    yearStart: 1970,
+                    yearDefault: 2010
                 },
             ],
         },
@@ -123,12 +259,95 @@
                     }, false);
                 })
             },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
             // 选中投保人
             checkGuest(item, index) {
-                console.log(item, index);
+                // console.log(item, index);
                 this.checkIndex = index
-                this.guest.name = item.title
+                this.guest.for = item.title
                 this.showblock2 = true
+                this.yearSpan = item.yearSpan
+                this.yearStart = item.yearStart
+                this.yearDefault = item.yearDefault
+            },
+            // 选中保险
+            checkInsurance(item, index) {
+                // console.log(item, index);
+                if (item.hasOwnProperty('check')) {
+                    this.$delete(item, 'check')
+                } else {
+                    this.$set(item, 'check', 1)
+                }
+            },
+            // 是否有社保
+            checkSocial(e) {
+                let index = e.target.dataset.data
+                this.socialIndex = index
+                this.showblock4 = true
+            },
+            // 确认
+            _insurance() {
+                this.insurance.filter(item => {
+                    item.
+                })
+            },
+            // 切换省份
+            _area(e) {
+                console.log(e);
+            },
+            // 移动端表单提交
+            submit_mobile() {
+                if (!this.guest.name) {
+                    this.showConfim('请输入您的姓名')
+                    return false
+                }
+                if (!this.guest.city) {
+                    this.showConfim('请选择城市')
+                    return false
+                }
+                if (!this.guest.mobile) {
+                    this.showConfim('请输入手机号')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.mobile))) {
+                    this.showConfim('请输入正确的手机号')
+                    return false
+                }
+                let obj = {
+                    name: this.guest.name,
+                    mobile: this.guest.mobile,
+                    province: this.guest.province,
+                    city: this.guest.city,
+                    birth: this.guest.birth,
+                    for: this.guest.for,
+                    has_social: this.guest.has_social,
+                    buy_case: this.guest.buy_case,
+                    type: 21
+                }
+                console.log(obj)
+                return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
             },
         }
     })

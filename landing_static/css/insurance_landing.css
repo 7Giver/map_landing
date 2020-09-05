@@ -1,4 +1,7 @@
 body {
+    max-width: 750px;
+    width: 100%;
+    margin: 0 auto;
     background: #ebebeb;
 }
 
@@ -14,6 +17,10 @@ body {
     html {
         font-size: 18px;
     }
+}
+
+select {
+    appearance: none; /*去掉下拉箭头*/
 }
 
 #app {
@@ -62,14 +69,15 @@ body {
     border-radius: 0.33rem;
 }
 
-.chat_block .sel_box .on::after{
+.chat_block .sel_box .on::after {
     content: "";
     position: absolute;
     bottom: 1rem;
     right: 0;
     width: 0.88rem;
     height: 0.88rem;
-    background: url('../image/insurance_landing/check.png') no-repeat center / 100% 100%;
+    background: url("../image/insurance_landing/check.png") no-repeat center /
+        100% 100%;
 }
 
 .chat_block .sel_box li {
@@ -77,13 +85,118 @@ body {
     float: left;
     width: 25%;
     text-align: center;
-    margin: .7rem 12% 0 0;
+    margin: 0.7rem 12% 0 0;
 }
 
 .chat_block .sel_box li:nth-child(3n) {
     margin-right: 0;
 }
 
+.chat_block .sel_box2 li:last-child {
+    width: 100%;
+}
+
 .chat_block .sel_box li p {
     font-size: 0.66rem;
+}
+
+.chat_block .sel_box .submit_btn {
+    background: #88d44e;
+    color: #fff;
+    font-size: 0.88rem;
+    line-height: 2.5rem;
+    border-radius: 0.33rem;
+    text-align: center;
+}
+
+.chat_block .sel_box_all {
+    background: #fff;
+    padding: 0.77rem 1.38rem;
+    border-radius: 0.33rem;
+    margin-right: 0.55rem;
+    width: 62%;
+    overflow: hidden;
+}
+
+.chat_block .sel_box_all span {
+    font-size: 0.88rem;
+    height: 2.5rem;
+    line-height: 2.5rem;
+    width: 46%;
+    text-align: center;
+    border: 1px solid #cccccc;
+    border-radius: 0.33rem;
+    box-sizing: border-box;
+    float: left;
+}
+
+.chat_block .sel_box_all span:nth-child(2n) {
+    float: right;
+}
+
+.chat_block .sel_box_all span.active {
+    border: 1px solid #88d44e;
+    color: #88d44e;
+}
+
+.chat_block .sel_box_4 span {
+    background: #88d44e;
+    border: 1px solid #88d44e;
+    color: #fff;
+}
+
+.chat_block .sel_box_4 select {
+    font-size: 0.88rem;
+    width: 46%;
+    border: 1px solid #cccccc;
+    height: 2.5rem;
+    border-radius: 0.33rem;
+    outline: none;
+    padding-left: 7%;
+    position: relative;
+    background: url('../image/insurance_landing/pic_angle.png')84% center no-repeat;
+    background-size: 0.5rem;
+}
+
+.chat_block .fill_box {
+    padding-top: 0.7rem;
+}
+
+.chat_block .fill_box .fill_msg {
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 0.33rem;
+}
+
+.chat_block .fill_box .fill_msg input {
+    padding: 0.5rem 0 0.5rem 0.7rem;
+    font-size: 0.88rem;
+    width: 100%;
+    border-radius: 0.33rem;
+}
+
+.chat_block .fill_box .fill_msg select {
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 0.33rem;
+    font-size: 0.88rem;
+    width: 100%;
+    padding: 0.5rem 0 0.5rem 0.7rem;
+}
+
+.chat_block .fill_box .sure {
+    background: #88d44e;
+    color: #fff;
+    font-size: 0.88rem;
+    line-height: 2.5rem;
+    border-radius: 0.33rem;
+    text-align: center;
+}
+
+.chat_block .sel_box_all span.good {
+    margin: 0;
+    background: #88d44e;
+    border: 1px solid #88d44e;
+    color: #fff;
 }
