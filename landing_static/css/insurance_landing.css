@@ -2,7 +2,6 @@ body {
     max-width: 750px;
     width: 100%;
     margin: 0 auto;
-    background: #ebebeb;
 }
 
 @media screen and (max-width: 320px) {
@@ -21,10 +20,13 @@ body {
 
 select {
     appearance: none; /*去掉下拉箭头*/
+    -moz-appearance: none;
+    -webkit-appearance: none;
 }
 
 #app {
-    padding-top: 2rem;
+    /* padding-top: 2rem; */
+    background: #ebebeb;
 }
 
 .fl {
@@ -33,6 +35,10 @@ select {
 
 .fr {
     float: right;
+}
+
+.block {
+    padding-top: 1.2rem;
 }
 
 .chat_block {
@@ -154,7 +160,8 @@ select {
     outline: none;
     padding-left: 7%;
     position: relative;
-    background: url('../image/insurance_landing/pic_angle.png')84% center no-repeat;
+    background: url("../image/insurance_landing/pic_angle.png") 84% center
+        no-repeat;
     background-size: 0.5rem;
 }
 
@@ -183,6 +190,9 @@ select {
     font-size: 0.88rem;
     width: 100%;
     padding: 0.5rem 0 0.5rem 0.7rem;
+    background: url("../image/insurance_landing/pic_angle.png") 94% center
+        no-repeat;
+    background-size: 0.5rem;
 }
 
 .chat_block .fill_box .sure {

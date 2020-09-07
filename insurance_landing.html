@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>保险定制</title>
-    <link rel="stylesheet" href="./landing_static/css/main.css?v=8">
-    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css">
+    <title>保险咨询</title>
+    <link rel="stylesheet" href="./landing_static/css/main.css?v=9">
+    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css?v=9">
 </head>
 
 <body>
     <div id="app" v-cloak>
-        <div id="block1">
+        <div id="block1" class="block">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <p class="fl ask_word">您好，我是保险顾问，很高兴能为您服务，请问您想为谁购买保险？</p>
@@ -19,19 +19,15 @@
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
                 <ul class="sel_box">
-                    <li
-                        :class="{on: checkIndex == index}"
-                        v-for="(item, index) in people"
-                        :key="index"
-                        @click="checkGuest(item, index)"
-                    >
+                    <li :class="{on: checkIndex == index}" v-for="(item, index) in people" :key="index"
+                        @click="checkGuest(item, index)">
                         <img :src="item.avatar" alt="">
                         <p>{{item.title}}</p>
                     </li>
                 </ul>
             </div>
         </div>
-        <div id="block2" v-show="showblock2">
+        <div id="block2" class="block" :style="{visibility: visibility2}">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <p class="fl ask_word">您想为<span class="m_name">{{guest.name}}</span>购买什么样类型的保险呢？</p>
@@ -39,14 +35,10 @@
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
                 <ul class="sel_box sel_box2">
-                    <li 
-                        :class="{on: item.check}"
-                        v-for="(item, index) in insurance"
-                        :key="index"
-                        @click="checkInsurance(item, index)"
-                    >
+                    <li :class="{on: item.check}" v-for="(item, index) in insurance" :key="index"
+                        @click="checkInsurance(item, index)">
                         <img :src="url+(index+1)+'.png'" alt="">
-                        <p>{{item.title}}险</p>
+                        <p>{{item.title}}</p>
                     </li>
                     <li>
                         <div class="submit_btn" @click="_insurance">确定</div>
@@ -54,7 +46,7 @@
                 </ul>
             </div>
         </div>
-        <div id="block3" v-show="showblock3">
+        <div id="block3" class="block" :style="{visibility: visibility3}">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <p class="fl ask_word">您<span class="m_name">{{guest.name}}</span>有社保吗？</p>
@@ -64,10 +56,10 @@
                 <div class="fr sel_box_all sel_box_3">
                     <span data-data="1" :class="{active: socialIndex==1}" @click="checkSocial">有</span>
                     <span data-data="0" :class="{active: socialIndex==0}" @click="checkSocial">没有</span>
-                </div>    
+                </div>
             </div>
         </div>
-        <div id="block4" v-show="showblock4">
+        <div id="block4" class="block" :style="{visibility: visibility4}">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <p class="fl ask_word">请问您<span class="m_name">{{guest.name}}</span>的出生年份</p>
@@ -75,21 +67,17 @@
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
                 <div class="fr sel_box_all sel_box_4">
-                    <select id="year" name="year">
-                        <option
-                            v-for="(item, index) in yearSpan"
-                            :value="yearStart+index"
-                            :key="index"
-                            :selected="(yearStart+index)==yearDefault"
-                        >
+                    <select id="year" name="year" @Change="changeAge">
+                        <option v-for="(item, index) in yearSpan" :value="yearStart+index" :key="index"
+                            :selected="(yearStart+index)==yearDefault">
                             {{yearStart+index}}
                         </option>
                     </select>
-                    <span class="age_sure" @click="showblock5=true">确定</span>
-                </div>    
+                    <span class="age_sure" @click="checkAge">确定</span>
+                </div>
             </div>
         </div>
-        <div id="block5" v-show="showblock5">
+        <div id="block5" class="block" :style="{visibility: visibility5}">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <p class="fl ask_word">好的，那我应该如何与您联系？</p>
@@ -97,29 +85,27 @@
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
                 <div class="sel_box fill_box">
-                    <div class="fill_msg"><input type="text" name="name" id="name" placeholder="姓名" /></div>
-                    <div class="fill_msg"><input type="tel" name="tel" id="tel" placeholder="电话" /></div>
+                    <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
+                    <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
                     <div class="fill_msg">
-                        <select name="province_s" id="province" onChange="_area(this)">
-                          <option value="">请选择省份</option>
-                            <volist name="province" id="vo">
-                                
-                            </volist>
-                        </select> 
+                        <select id="province" v-model="areaSelected" @change="areaChange">
+                            <option v-for="(item, index) in areaList" :value="item.province" :key="index">
+                                {{item.province}}
+                            </option>
+                        </select>
                     </div>
                     <div class="fill_msg">
-                        <select name="city_s" id="city">
-                            <option value="">请选择城市</option>
-                            <volist name="city" id="vo">
-                                
-                            </volist>
+                        <select id="city" v-model="citySelected" @change="cityChange">
+                            <option v-for="(item, index) in checkList" :value="item" :key="index">
+                                {{item}}
+                            </option>
                         </select>
                     </div>
                     <div class="sure" id="fll_sure" @click="submit_mobile">确定</div>
                 </div>
             </div>
         </div>
-        <div id="block6" v-show="showblock5">
+        <div id="block6" class="block" :style="{visibility: visibility6}">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <div class="fl ask_word">收到，我会尽快与您联系，请保持通讯畅通哦～</div>
@@ -130,15 +116,11 @@
                     <span class="good">好的</span>
                 </div>    
             </div> -->
-            <div style="font-size:10px;color:#989898;padding:10px 3%;">隐私提示：您同意将您在本网站留下任何个人信息授权本公司向特定的或者不特定的第三人公开此信息，以便为您寻找最符合您需求的客户经理，不会用作其他用途。
+            <div style="font-size:10px;color:#989898;padding:10px 3%;">
+                隐私提示：您同意将您在本网站留下任何个人信息授权本公司向特定的或者不特定的第三人公开此信息，以便为您寻找最符合您需求的客户经理，不会用作其他用途。
             </div>
         </div>
-        <!-- <select name="" id="">
-            <option value="">江苏</option>
-            <option value="">浙江</option>
-            <option value="">四川</option>
-            <option value="">湖北</option>
-        </select> -->
+        <div class="fill" :style="fillHeight" v-show="showfill"></div>
         <!-- 移动端提示 -->
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
     </div>
@@ -156,34 +138,40 @@
             guest: {},
             checkIndex: null,
             socialIndex: null,
-            showblock2: false,
-            showblock3: false,
-            showblock4: false,
-            showblock5: false,
-            showblock6: false,
+            visibility2: 'hidden',
+            visibility3: 'hidden',
+            visibility4: 'hidden',
+            visibility5: 'hidden',
+            visibility6: 'hidden',
+            showfill: false,
             yearSpan: null, // 出生年份跨度
             yearStart: null,
             yearDefault: null,
             confimShow: false,
+            areaList: [],
+            cityList: [],
+            checkList: [],
+            areaSelected: null,
+            citySelected: null,
+            fillHeight: null,
             baseURL: 'http://server.yingku878.com/', //接口请求地址
             adviser: './landing_static/image/insurance_landing/adviser.png',
             me: './landing_static/image/insurance_landing/me.png',
             url: './landing_static/image/insurance_landing/pic',
-            insurance: [
-                {
-                    title: '人寿'
+            insurance: [{
+                    title: '人寿险'
                 },
                 {
-                    title: '健康'
+                    title: '健康险'
                 },
                 {
-                    title: '意外'
+                    title: '意外险'
                 },
                 {
-                    title: '财产'
+                    title: '财产险'
                 },
                 {
-                    title: '旅游'
+                    title: '旅游险'
                 },
             ],
             people: [{
@@ -237,17 +225,66 @@
                 },
             ],
         },
+        created() {
+            this.getFlat()
+        },
         mounted() {
             this.getCity()
+            this.getAreaList()
         },
         methods: {
+            // flat兼容
+            getFlat() {
+                // 兼容ie数组没有flat方法
+                if (!Array.prototype.flat) {
+                    Array.prototype.flat = function (count) {
+                        let c = count || 1;
+                        let len = this.length;
+                        let exe = [];
+                        if (this.length == 0) return this;
+                        while (c--) {
+                            let _arr = [];
+                            let flag = false;
+                            if (exe.length == 0) {
+                                flag = true;
+                                for (let i = 0; i < len; i++) {
+                                    if (this[i] instanceof Array) {
+                                        exe.push(...this[i]);
+                                    } else {
+                                        exe.push(this[i]);
+                                    }
+                                }
+                            } else {
+                                for (let i = 0; i < exe.length; i++) {
+                                    if (exe[i] instanceof Array) {
+                                        flag = true;
+                                        _arr.push(...exe[i]);
+                                    } else {
+                                        _arr.push(exe[i]);
+                                    }
+                                }
+                                exe = _arr;
+                            }
+                            if (!flag && c == Infinity) {
+                                break;
+                            }
+                        }
+                        return exe;
+                    };
+                }
+            },
             // 获取省市
             getCity() {
                 this.sendAddress().then(result => {
-                    // console.log(result)
-                    this.guest.province = result.province.split('省')[0]
-                    this.guest.city = result.city.split('市')[0]
-                    console.log(this.guest);
+                    this.areaSelected = result.province.split('省')[0]
+                    if (this.areaSelected) {
+                        let index = this.areaList.findIndex(item => item.province == this.areaSelected)
+                        let result = this.cityList.filter((v, i) => i == index)
+                        result.unshift('请选择城市')
+                        this.checkList = result.flat()
+                        this.citySelected = this.checkList[0]
+                    }
+                    // this.guest.city = result.city.split('市')[0]
                 })
             },
             // 第三方获取城市传值
@@ -257,6 +294,23 @@
                         var loc = event.data;
                         loc ? resolve(loc) : false
                     }, false);
+                })
+            },
+            // 获取省市
+            getAreaList() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        this.areaList = res.data
+                        this.areaList.unshift({
+                            province: '请选择省份'
+                        })
+                        this.checkList.unshift('请选择城市')
+                        this.areaList.forEach(item => {
+                            this.cityList.push(item.city)
+                        })
+                        this.areaSelected = this.areaList[0].province
+                        this.citySelected = this.checkList[0]
+                    }
                 })
             },
             //显示提示框
@@ -273,10 +327,12 @@
                 // console.log(item, index);
                 this.checkIndex = index
                 this.guest.for = item.title
-                this.showblock2 = true
+                this.visibility2 = ''
                 this.yearSpan = item.yearSpan
                 this.yearStart = item.yearStart
                 this.yearDefault = item.yearDefault
+                this.showfill = true
+                this.showDetails(2)
             },
             // 选中保险
             checkInsurance(item, index) {
@@ -286,54 +342,121 @@
                 } else {
                     this.$set(item, 'check', 1)
                 }
+                let result = this.insurance.filter(item => {
+                    return item.check
+                })
+                if (result.length) {
+                    let newArr = []
+                    result.forEach(item => {
+                        newArr.push(item.title)
+                    })
+                    let str = newArr.join(',')
+                    this.guest.buy_case = str
+                } else {
+                    this.guest.buy_case = null
+                }
+            },
+            // 确认保险
+            _insurance() {
+                let result = this.insurance.filter(item => {
+                    return item.check
+                })
+                if (result.length) {
+                    let newArr = []
+                    result.forEach(item => {
+                        newArr.push(item.title)
+                    })
+                    let str = newArr.join(',')
+                    this.guest.buy_case = str
+                    this.visibility3 = ''
+                    this.showDetails(3)
+                } else {
+                    this.showConfim('请至少选择一项保障需求')
+                }
             },
             // 是否有社保
             checkSocial(e) {
                 let index = e.target.dataset.data
+                index == 1 ? this.guest.has_social = '有' : this.guest.has_social = '没有'
                 this.socialIndex = index
-                this.showblock4 = true
+                this.visibility4 = ''
+                this.showDetails(4)
             },
-            // 确认
-            _insurance() {
-                this.insurance.filter(item => {
-                    item.
-                })
+            // 确认年龄
+            checkAge() {
+                this.guest.birth = this.yearDefault
+                this.visibility5 = ''
+                this.showDetails(5)
+            },
+            // 切换年龄监听
+            changeAge(e) {
+                this.guest.birth = e.target.value
             },
             // 切换省份
-            _area(e) {
-                console.log(e);
+            areaChange(e) {
+                let value = e.target.value
+                let index = this.areaList.findIndex(item => item.province == value)
+                let result = this.cityList.filter((v, i) => i == index)
+                result.unshift('请选择城市')
+                this.checkList = result.flat()
+                this.citySelected = this.checkList[0]
+            },
+            // 市级下拉监听
+            cityChange(e) {
+                // console.log(e.target.value)
+            },
+            // 点击翻页方法
+            showDetails(num) {
+                // var el = document.getElementById(`block${num}`);
+                let height = document.documentElement.clientHeight // 整个页面高度
+                let topheight = $(`#block${num}`).offset().top; //dom距离顶部高度
+                let domHeight = $(`#block${num-1}`).height(); //上一个dom元素高度
+                let moveHeight = topheight - domHeight/2
+                // console.log(moveHeight);
+                $('html,body').animate({
+                    scrollTop: moveHeight
+                }, 500);
+                this.fillHeight = `height:${height/2}px`
             },
             // 移动端表单提交
             submit_mobile() {
+                if (!this.guest.buy_case) {
+                    this.showConfim('请至少选择一项保障需求')
+                    return false
+                }
                 if (!this.guest.name) {
                     this.showConfim('请输入您的姓名')
                     return false
                 }
-                if (!this.guest.city) {
+                if (!this.guest.tel) {
+                    this.showConfim('请输入您的电话')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.tel))) {
+                    this.showConfim('电话输入格式错误')
+                    return false
+                }
+                if (!this.areaSelected || this.areaSelected == '请选择省份') {
+                    this.showConfim('请选择省份')
+                    return false
+                }
+                if (!this.citySelected || this.citySelected == '请选择城市') {
                     this.showConfim('请选择城市')
-                    return false
-                }
-                if (!this.guest.mobile) {
-                    this.showConfim('请输入手机号')
-                    return false
-                }
-                if (!(/^1[3456789]\d{9}$/.test(this.guest.mobile))) {
-                    this.showConfim('请输入正确的手机号')
                     return false
                 }
                 let obj = {
                     name: this.guest.name,
-                    mobile: this.guest.mobile,
-                    province: this.guest.province,
-                    city: this.guest.city,
+                    mobile: this.guest.tel,
+                    province: this.areaSelected,
+                    city: this.citySelected,
                     birth: this.guest.birth,
                     for: this.guest.for,
                     has_social: this.guest.has_social,
                     buy_case: this.guest.buy_case,
                     type: 21
                 }
-                console.log(obj)
-                return false
+                // console.log(obj)
+                // return false
                 $.ajax({
                     url: `${this.baseURL}?r=api/user/customer`,
                     type: "post",
@@ -343,6 +466,10 @@
                     success: (res) => {
                         // console.log(res)
                         this.showConfim('提交成功')
+                        setTimeout(() => {
+                            this.visibility6 = ''
+                            this.showfill = false
+                        }, 500)
                     },
                     error: (errore) => {
                         // console.log(errore);
