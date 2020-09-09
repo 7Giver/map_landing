@@ -152,15 +152,15 @@ select {
 }
 
 .chat_block .sel_box_4 select {
-    font-size: 0.88rem;
-    width: 46%;
+    font-size: 0.8rem;
+    width: 48%;
     border: 1px solid #cccccc;
     height: 2.5rem;
     border-radius: 0.33rem;
     outline: none;
     padding-left: 7%;
     position: relative;
-    background: url("../image/insurance_landing/pic_angle.png") 84% center
+    background: url("../image/insurance_landing/pic_angle.png") 88% center
         no-repeat;
     background-size: 0.5rem;
 }

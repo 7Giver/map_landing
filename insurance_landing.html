@@ -68,6 +68,7 @@
                 <img class="fr avatar" :src="me" alt="">
                 <div class="fr sel_box_all sel_box_4">
                     <select id="year" name="year" @Change="changeAge">
+                        <option value="">请选择</option>
                         <option v-for="(item, index) in yearSpan" :value="yearStart+index" :key="index"
                             :selected="(yearStart+index)==yearDefault">
                             {{yearStart+index}}
@@ -190,49 +191,49 @@
                     title: '自己',
                     yearSpan: 46,
                     yearStart: 1950,
-                    yearDefault: 1985
+                    // yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/husband.png',
                     title: '丈夫',
                     yearSpan: 46,
                     yearStart: 1950,
-                    yearDefault: 1985
+                    // yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/wife.png',
                     title: '妻子',
                     yearSpan: 46,
                     yearStart: 1950,
-                    yearDefault: 1985
+                    // yearDefault: 1985
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/father.png',
                     title: '父亲',
                     yearSpan: 31,
                     yearStart: 1950,
-                    yearDefault: 1965
+                    // yearDefault: 1965
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/mother.png',
                     title: '母亲',
                     yearSpan: 31,
                     yearStart: 1950,
-                    yearDefault: 1965
+                    // yearDefault: 1965
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/daughter.png',
                     title: '女儿',
                     yearSpan: 48,
                     yearStart: 1970,
-                    yearDefault: 2010
+                    // yearDefault: 2010
                 },
                 {
                     avatar: './landing_static/image/insurance_landing/son.png',
                     title: '儿子',
                     yearSpan: 48,
                     yearStart: 1970,
-                    yearDefault: 2010
+                    // yearDefault: 2010
                 },
             ],
         },
@@ -395,6 +396,11 @@
             },
             // 确认年龄
             checkAge() {
+                let birth = this.guest.birth
+                if(!birth || birth == '请选择')  {
+                    this.showConfim('请输入年龄')
+                    return false
+                }
                 this.guest.birth = this.yearDefault
                 this.visibility5 = ''
                 this.showDetails(5)
@@ -431,8 +437,13 @@
             },
             // 移动端表单提交
             submit_mobile() {
+                let birth = this.guest.birth
                 if (!this.guest.buy_case) {
                     this.showConfim('请至少选择一项保障需求')
+                    return false
+                }
+                if(!birth || birth == '请选择')  {
+                    this.showConfim('请输入年龄')
                     return false
                 }
                 if (!this.guest.name) {
