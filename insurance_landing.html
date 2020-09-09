@@ -116,13 +116,15 @@
                     <span class="good">好的</span>
                 </div>    
             </div> -->
-            <div style="font-size:10px;color:#989898;padding:10px 3%;">
+            <div class="my_tips">
                 隐私提示：您同意将您在本网站留下任何个人信息授权本公司向特定的或者不特定的第三人公开此信息，以便为您寻找最符合您需求的客户经理，不会用作其他用途。
+                <p>重庆庄华电子商务有限公司</p>
             </div>
         </div>
         <div class="fill" :style="fillHeight" v-show="showfill"></div>
         <!-- 移动端提示 -->
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+        <p class="copyright" v-if="visibility6 !== ''">重庆庄华电子商务有限公司</p>
     </div>
     <!-- 第三方定位 -->
     <iframe id="geoPage" width=0 height=0 frameborder=0 style="display:none;" scrolling="no"
@@ -131,6 +133,15 @@
 
 <script src="./landing_static/js/vue.min.js"></script>
 <script src="./landing_static/js/jQuery.js"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24a6f274483cf1778e5dbe1fe669f221";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 <script>
     var app = new Vue({
         el: '#app',

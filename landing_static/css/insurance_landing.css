@@ -210,3 +210,25 @@ select {
     border: 1px solid #88d44e;
     color: #fff;
 }
+
+.block .my_tips {
+    color: #989898;
+    font-size: 10px;
+    padding: 10px 3%;
+}
+
+.block .my_tips > p{
+   margin: 1rem auto;
+   font-size: 0.8rem;
+   text-align: center;
+}
+
+.copyright {
+    position: fixed;
+    left: 50%;
+    bottom: 2%;
+    transform: translate(-50%, -50%);
+    color: #999;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
