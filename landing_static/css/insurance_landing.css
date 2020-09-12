@@ -2,6 +2,7 @@ body {
     max-width: 750px;
     width: 100%;
     margin: 0 auto;
+    background: #ebebeb;
 }
 
 @media screen and (max-width: 320px) {
@@ -26,7 +27,6 @@ select {
 
 #app {
     /* padding-top: 2rem; */
-    background: #ebebeb;
 }
 
 .fl {
@@ -145,6 +145,10 @@ select {
     color: #88d44e;
 }
 
+.chat_block .sel_box_4  {
+    width: 40%;
+}
+
 .chat_block .sel_box_4 span {
     background: #88d44e;
     border: 1px solid #88d44e;
@@ -153,12 +157,12 @@ select {
 
 .chat_block .sel_box_4 select {
     font-size: 0.8rem;
-    width: 48%;
+    width: 4.5rem;
     border: 1px solid #cccccc;
     height: 2.5rem;
     border-radius: 0.33rem;
     outline: none;
-    padding-left: 7%;
+    padding-left: 0.5rem;
     position: relative;
     background: url("../image/insurance_landing/pic_angle.png") 88% center
         no-repeat;
@@ -230,5 +234,7 @@ select {
     transform: translate(-50%, -50%);
     color: #999;
     font-size: 0.8rem;
+    text-align: center;
+    line-height: 1.3rem;
     white-space: nowrap;
 }

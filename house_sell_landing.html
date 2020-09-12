@@ -56,7 +56,7 @@
             </div>
         </div>
         <p class="tips">*您提供的信息我们将严格保密，请放心填写！</p>
-        <p class="copyright">版权：合肥金堡网络科技有限公司</p>
+        <p class="copyright">版权：{{company}}</p>
         <div class="submit_btn" @click="submit">免费咨询</div>
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
         <!-- picker弹出层 -->
@@ -82,12 +82,20 @@
         el: '#app',
         data: {
             guest: {},
+            localHost: '',
+            company: '合肥金堡网络科技有限公司',
             baseURL: 'http://server.yingku878.com/',
             radio: '1', //单选框默认
             showPicker: false,
             confimShow: false, //提示框显示
             confim_text: '', //提示框信息
             columns: [],
+        },
+        created() {
+            this.localHost = location.host
+            if (this.localHost == 'zs.rcxxgs.cn') {
+                this.company = '湖南忍宠信息科技有限公司'
+            }
         },
         mounted() {
             // console.log(Array.prototype)
@@ -240,6 +248,15 @@
         hm.src = "https://hm.baidu.com/hm.js?24a6f274483cf1778e5dbe1fe669f221";
         var s = document.getElementsByTagName("script")[0]; 
         s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0bb61ff7457b836024b566ee36afc590";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
     })();
 </script>
 
