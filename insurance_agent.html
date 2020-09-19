@@ -11,6 +11,7 @@
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="Cache" content="no-cache">
     <title>保险代理人</title>
+    <link rel="stylesheet" href="./landing_static/css/vant.css">
     <link rel="stylesheet" href="./landing_static/css/main.css?v=9">
 </head>
 
@@ -20,13 +21,11 @@
         width: 100%;
         margin: 0 auto;
     }
-
     #app {
         min-height: 100vh;
         padding-bottom: 7rem;
         background-color: #C8E9FF;
     }
-
     /* .top_block {
         padding-top: 56%;
         background-image:
@@ -36,7 +35,6 @@
         background-repeat: no-repeat, no-repeat;
         background-size: 100% auto, 100% auto;
     } */
-
     .top_block {
         padding-top: 56%;
         background-image: url(./landing_static/image/insurance_agent/con1.png);
@@ -44,7 +42,6 @@
         background-repeat: no-repeat;
         background-size: 100% auto;
     }
-
     .container {
         width: 92%;
         margin: 0 auto;
@@ -53,7 +50,6 @@
         border-radius: 0.8rem;
         /* border-radius: 0px 0px 0.8rem 0.8rem; */
     }
-
     .container h3 {
         color: #32A8EF;
         font-size: 1.4rem;
@@ -61,7 +57,6 @@
         text-align: center;
         letter-spacing: 2px;
     }
-
     .container .title {
         display: flex;
         align-items: center;
@@ -71,13 +66,11 @@
         font-size: 1rem;
         text-align: center;
     }
-
     .container .title>span {
         color: #FF583C;
         margin: 0 0.3rem;
         font-weight: bold;
     }
-
     .container .title::after {
         content: "";
         width: 1.6rem;
@@ -86,7 +79,6 @@
         background: #5A6873;
         opacity: 0.2;
     }
-
     .container .title::before {
         content: "";
         width: 1.6rem;
@@ -95,44 +87,36 @@
         background: #5A6873;
         opacity: 0.2;
     }
-
     .container .form {
         padding-top: 2rem;
     }
-
     .container .form .input_block {
         margin-bottom: 1rem;
     }
-
     .container .form .input_block .label {
         color: #333333;
         font-size: 1rem;
         margin-bottom: 0.7rem;
     }
-
     .container .form .input_block .must::after {
         content: "*";
         color: #FF2424;
         font-size: 1rem;
         margin-left: 0.2rem;
     }
-
     .container .form .input_block .input_b {
         border: 0.1rem solid #E8E8E8;
         border-radius: 0.4rem;
     }
-
     .container .form .input_block input {
         width: 100%;
         font-size: 1rem;
         line-height: 2.5rem;
         padding-left: 0.5rem;
     }
-
     .btn_block {
         padding: 1.5rem 0 3rem;
     }
-
     .btn_block .my_btn {
         color: #fff;
         width: 90%;
@@ -144,7 +128,6 @@
         border-radius: 0.5rem;
         background: linear-gradient(90deg, rgba(14, 155, 245, 0.8), rgba(39, 182, 255, 0.8));
     }
-
     .fix_btn {
         position: fixed;
         bottom: 1.5%;
@@ -160,13 +143,45 @@
         border-radius: 0.5rem;
         background: linear-gradient(90deg, rgba(14, 155, 245, 0.8), rgba(39, 182, 255, 0.8));
     }
-
     .copyright {
         color: #999;
         font-size: 0.8rem;
         text-align: center;
         line-height: 1.3rem;
         white-space: nowrap;
+    }
+    /* 弹出层 */
+    .van-popup {
+        width: 75%;
+        border-radius: 0.88rem;
+        background: transparent;
+    }
+    .popup_block {
+        overflow: hidden;
+    }
+    .popup_block img {
+        display: block;
+        width: 100%;
+    }
+    .popup_block .content {
+        padding: 2rem 2rem 1.7rem;
+        text-align: center;
+        background-color: #fff;
+    }
+    .popup_block .content p {
+        color: #333537;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    .popup_block .content p>span {
+        color: #FF583C;
+    }
+    .popup_block .content .confim_btn {
+        color: #fff;
+        font-size: 1.1rem;
+        line-height: 2.8rem;
+        border-radius: 3rem;
+        background: linear-gradient(90deg, #0E9BF5, #27B6FF);
     }
 </style>
 
@@ -208,11 +223,40 @@
         </div> -->
         <!-- 移动端提示 -->
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+        <!-- picker弹出层 -->
+        <van-popup v-model="showPopup">
+            <div class="popup_block">
+                <img src="./landing_static/image/insurance_agent/title.png" alt="">
+                <div class="content">
+                    <p>将有<span>专属人员</span>为您服务</p>
+                    <div class="confim_btn" @click="showPopup=false">好的</div>
+                </div>
+            </div>
+        </van-popup>
     </div>
 </body>
 
 <script src="./landing_static/js/vue.min.js"></script>
 <script src="./landing_static/js/jQuery.js"></script>
+<script src="./landing_static/js/vant.min.js"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24a6f274483cf1778e5dbe1fe669f221";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d50a4f2d96fa65188ec440607894cfb5";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
 <script>
     var app = new Vue({
         el: '#app',
@@ -221,6 +265,7 @@
             visits: 106,
             visibility: true,
             btnShow: true,
+            showPopup: false, // 弹窗显示
             confimShow: false,
             baseURL: 'http://server.yingku878.com/'
         },
@@ -231,21 +276,6 @@
             // window.onscroll = () => {
             //     this.debounce(this.getPageTo(), 1000)
             // }
-            // 方法一：
-            function debounce(fn, delay) {
-                // 记录上一次的延时器
-                var timer = null;
-                var delay = delay || 200;
-                return function () {
-                    var args = arguments;
-                    var that = this;
-                    // 清除上一次延时器
-                    clearTimeout(timer)
-                    timer = setTimeout(function () {
-                        fn.apply(that, args)
-                    }, delay);
-                }
-            }
         },
         methods: {
             // 获取访问量
@@ -369,7 +399,8 @@
                     dataType: "json",
                     success: (res) => {
                         // console.log(res)
-                        this.showConfim('提交成功')
+                        // this.showConfim('提交成功')
+                        this.showPopup = true
                         this.guest = {}
                     },
                     error: (errore) => {

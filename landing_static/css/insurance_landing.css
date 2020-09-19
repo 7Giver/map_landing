@@ -3,6 +3,7 @@ body {
     width: 100%;
     margin: 0 auto;
     background: #ebebeb;
+    background: url(../image/insurance_landing/bg.png) no-repeat center / 100% 100%;
 }
 
 @media screen and (max-width: 320px) {
@@ -20,13 +21,28 @@ body {
 }
 
 select {
+    color: #fff;
     appearance: none; /*去掉下拉箭头*/
     -moz-appearance: none;
     -webkit-appearance: none;
 }
 
+option {
+    color: #242424;
+}
+
+input {
+    color: #fff;
+    width: 100%;
+}
+
+input::-webkit-input-placeholder {
+    color: #FFAE99;
+}
+
 #app {
     /* padding-top: 2rem; */
+    min-height: 100vh;
 }
 
 .fl {
@@ -41,6 +57,24 @@ select {
     padding-top: 1.2rem;
 }
 
+.right::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -0.5rem;
+    top: 0.6rem;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #9EEA6A;
+}
+
+.banner img {
+    display: block;
+    width: 100%;
+}
+
 .chat_block {
     padding: 0 4%;
     overflow: hidden;
@@ -48,31 +82,77 @@ select {
 }
 
 .chat_block .avatar {
-    width: 1.6rem;
-    height: 1.6rem;
+    width: 2.3rem;
+    height: 2.3rem;
     border-radius: 50%;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .chat_block .ask_word {
-    width: 72%;
-    background: #3ba4e5;
-    color: #fff;
+    width: 80%;
+    background: #9EEA6A;
+    color: #242424;
     padding: 0.35rem 0.55rem;
-    font-size: 0.9rem;
-    border-radius: 0.33rem;
-    line-height: 1.6;
-    margin-left: 0.55rem;
+    font-size: 0.8rem;
+    /* border-radius: 0.33rem; */
+    line-height: 1.8;
+    margin-left: 0.8rem;
+    position: relative;
 }
 
-.chat_block .sel_box {
-    background: #fff;
-    width: 72%;
+.chat_block .ask_word::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: -0.5rem;
+    top: 0.6rem;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 10px solid #9EEA6A;
+}
+
+.chat_block .type_box {
+    background: rgba(245,80,40,0.8);
+    width: 65%;
     float: right;
     margin-right: 0.55rem;
     padding: 0 6% 0.7rem;
     overflow: hidden;
-    border-radius: 0.33rem;
+}
+
+.chat_block .type_box li {
+    position: relative;
+    float: left;
+    width: 29%;
+    color: #fff;
+    text-align: center;
+    margin: 0.7rem 6% 0 0;
+}
+
+.chat_block .type_box li:nth-child(3n) {
+    margin-right: 0;
+}
+
+.chat_block .type_box li img {
+    max-width: 100%;
+}
+
+.chat_block .type_box li p {
+    color: #fff;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.chat_block .sel_box {
+    background: rgba(245,80,40,0.8);
+    width: 80%;
+    float: right;
+    margin-right: 0.55rem;
+    padding: 0 6% 0.7rem;
+    overflow: hidden;
+    /* border-radius: 0.33rem; */
 }
 
 .chat_block .sel_box .on::after {
@@ -89,12 +169,13 @@ select {
 .chat_block .sel_box li {
     position: relative;
     float: left;
-    width: 25%;
+    color: #fff;
+    width: 22%;
     text-align: center;
-    margin: 0.7rem 12% 0 0;
+    margin: 0.7rem 3% 0 0;
 }
 
-.chat_block .sel_box li:nth-child(3n) {
+.chat_block .sel_box li:nth-child(4n) {
     margin-right: 0;
 }
 
@@ -102,37 +183,71 @@ select {
     width: 100%;
 }
 
+.chat_block .sel_box li img {
+    max-width: 100%;
+}
+
 .chat_block .sel_box li p {
-    font-size: 0.66rem;
+    color: #fff;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
 .chat_block .sel_box .submit_btn {
-    background: #88d44e;
-    color: #fff;
+    background: #FFF6F4;
+    color: #F54F28;
     font-size: 0.88rem;
     line-height: 2.5rem;
-    border-radius: 0.33rem;
+    border-radius: 5rem;
     text-align: center;
 }
 
 .chat_block .sel_box_all {
-    background: #fff;
-    padding: 0.77rem 1.38rem;
-    border-radius: 0.33rem;
+    background: rgba(245,80,40,0.8);
+    padding: 0.77rem 0.8rem;
     margin-right: 0.55rem;
-    width: 62%;
+    width: 67%;
+    /* overflow: hidden; */
+    position: relative;
+}
+
+/* .sel_box_all::after {
+    content: "";
+    display: block;
+    position: absolute;
+    right: -0.5rem;
+    top: 0.6rem;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid #9EEA6A;
+} */
+
+.chat_block .sel_box_all .input_block {
+    float: left;
+    width: 64%;
+    padding: 0 0.6rem;
     overflow: hidden;
+    border: 1px solid #fff;
+    border-radius: 4rem;
+    line-height: 2.2rem;
+    color: #fff;
+}
+
+.chat_block .sel_box_all .input_block input {
+    font-size: 0.7rem;
 }
 
 .chat_block .sel_box_all span {
     font-size: 0.88rem;
-    height: 2.5rem;
-    line-height: 2.5rem;
-    width: 46%;
+    line-height: 2.2rem;
+    width: 42%;
     text-align: center;
-    border: 1px solid #cccccc;
-    border-radius: 0.33rem;
+    border: 1px solid #FFF7F5;
+    border-radius: 3rem;
     box-sizing: border-box;
+    color: #fff;
     float: left;
 }
 
@@ -141,8 +256,47 @@ select {
 }
 
 .chat_block .sel_box_all span.active {
-    border: 1px solid #88d44e;
-    color: #88d44e;
+    color: #F54F28;
+    background: #FFF7F5;
+}
+
+.chat_block .sel_box_all .age_sure {
+    font-size: 0.88rem;
+    line-height: 2.2rem;
+    width: 31%;
+    text-align: center;
+    border: 1px solid #FFF7F5;
+    border-radius: 3rem;
+    box-sizing: border-box;
+    color: #F55028;
+    float: left;
+    background: #FFF7F5;
+}
+
+.chat_block .sel_box_all .cashList_block {
+    display: flex;
+    align-items: center;
+}
+
+.chat_block .sel_box_all .cashList_block>div {
+    flex: 1;
+    font-size: 0.8rem;
+    line-height: 2.2rem;
+    text-align: center;
+    border: 1px solid #FFF7F5;
+    border-radius: 3rem;
+    color: #FFF2EF;
+    margin-right: 0.6rem;
+    white-space: nowrap;
+}
+
+.chat_block .sel_box_all .cashList_block>div:last-child {
+    margin-right: 0;
+}
+
+.chat_block .sel_box_all .cashList_block .on {
+    color: #F54F28;
+    background: #FFF7F5;
 }
 
 .chat_block .sel_box_4  {
@@ -157,12 +311,12 @@ select {
 
 .chat_block .sel_box_4 select {
     font-size: 0.8rem;
-    width: 4.5rem;
+    width: 5.5rem;
     border: 1px solid #cccccc;
     height: 2.5rem;
-    border-radius: 0.33rem;
+    border-radius: 5rem;
     outline: none;
-    padding-left: 0.5rem;
+    padding-left: 0.8rem;
     position: relative;
     background: url("../image/insurance_landing/pic_angle.png") 88% center
         no-repeat;
@@ -173,38 +327,38 @@ select {
     padding-top: 0.7rem;
 }
 
-.chat_block .fill_box .fill_msg {
+.chat_block .fill_msg {
     margin-bottom: 10px;
-    border: 1px solid #cccccc;
-    border-radius: 0.33rem;
+    border: 1px solid #FFAE99;
+    border-radius: 5rem;
 }
 
-.chat_block .fill_box .fill_msg input {
+.chat_block .fill_msg input {
     padding: 0.5rem 0 0.5rem 0.7rem;
     font-size: 0.88rem;
     width: 100%;
-    border-radius: 0.33rem;
+    border-radius: 5rem;
+    color: #fff;
 }
 
-.chat_block .fill_box .fill_msg select {
+.chat_block .fill_msg select {
     background: #fff;
     border: none;
     outline: none;
-    border-radius: 0.33rem;
     font-size: 0.88rem;
     width: 100%;
-    padding: 0.5rem 0 0.5rem 0.7rem;
+    padding: 0.5rem 0 0.5rem 1rem;
     background: url("../image/insurance_landing/pic_angle.png") 94% center
         no-repeat;
     background-size: 0.5rem;
 }
 
 .chat_block .fill_box .sure {
-    background: #88d44e;
-    color: #fff;
+    background: #FFF7F5;
+    color: #F54F28;
     font-size: 0.88rem;
-    line-height: 2.5rem;
-    border-radius: 0.33rem;
+    line-height: 2.2rem;
+    border-radius: 4rem;
     text-align: center;
 }
 

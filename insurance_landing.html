@@ -12,118 +12,281 @@
     <meta http-equiv="Cache" content="no-cache">
     <title>保险咨询</title>
     <link rel="stylesheet" href="./landing_static/css/main.css?v=9">
-    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css?v=12">
+    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css?v=17">
 </head>
 
 <body>
     <div id="app" v-cloak>
-        <div id="block1" class="block">
+        <div class="banner">
+            <img src="./landing_static/image/insurance_landing/banner.png" alt="">
+        </div>
+        <div id="block0" class="block" style="padding-top: 2.6rem;">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
-                <p class="fl ask_word">您好，我是保险顾问，很高兴能为您服务，请问您想为谁购买保险？</p>
+                <p class="fl ask_word">您好，我是保险顾问，很高兴能为您服务，请问您想购买哪类保险？</p>
             </div>
             <div class="chat_block">
                 <img class="fr avatar" :src="me" alt="">
-                <ul class="sel_box">
-                    <li :class="{on: checkIndex == index}" v-for="(item, index) in people" :key="index"
-                        @click="checkGuest(item, index)">
+                <ul class="type_box">
+                    <li :class="{on: checkIndex == index}" v-for="(item, index) in insuranceType" :key="index"
+                        @click="checkType(index)">
                         <img :src="item.avatar" alt="">
                         <p>{{item.title}}</p>
                     </li>
                 </ul>
             </div>
         </div>
-        <div id="block2" class="block" :style="{visibility: visibility2}">
-            <div class="chat_block">
-                <img class="fl avatar" :src="adviser" alt="">
-                <p class="fl ask_word">您想为<span class="m_name">{{guest.for}}</span>购买什么样类型的保险呢？</p>
-            </div>
-            <div class="chat_block">
-                <img class="fr avatar" :src="me" alt="">
-                <ul class="sel_box sel_box2">
-                    <li :class="{on: item.check}" v-for="(item, index) in insurance" :key="index"
-                        @click="checkInsurance(item, index)">
-                        <img :src="url+(index+1)+'.png'" alt="">
-                        <p>{{item.title}}</p>
-                    </li>
-                    <li>
-                        <div class="submit_btn" @click="_insurance">确定</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div id="block3" class="block" :style="{visibility: visibility3}">
-            <div class="chat_block">
-                <img class="fl avatar" :src="adviser" alt="">
-                <p class="fl ask_word">您<span class="m_name">{{guest.for}}</span>有社保吗？</p>
-            </div>
-            <div class="chat_block">
-                <img class="fr avatar" :src="me" alt="">
-                <div class="fr sel_box_all sel_box_3">
-                    <span data-data="1" :class="{active: socialIndex==1}" @click="checkSocial">有</span>
-                    <span data-data="0" :class="{active: socialIndex==0}" @click="checkSocial">没有</span>
+        <!-- 保险 -->
+        <div class="insurance_block" v-if="showType==0">
+            <div id="block1" class="block">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请问您想为谁购买保险？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <ul class="sel_box">
+                        <li :class="{on: checkIndex == index}" v-for="(item, index) in people" :key="index"
+                            @click="checkGuest(item, index)">
+                            <img :src="item.avatar" alt="">
+                            <p>{{item.title}}</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div id="block4" class="block" :style="{visibility: visibility4}">
-            <div class="chat_block">
-                <img class="fl avatar" :src="adviser" alt="">
-                <p class="fl ask_word">请问您<span class="m_name">{{guest.for}}</span>的出生年份</p>
-            </div>
-            <div class="chat_block">
-                <img class="fr avatar" :src="me" alt="">
-                <div class="fr sel_box_all sel_box_4">
-                    <select id="year" name="year" @Change="changeAge">
-                        <option value="">请选择</option>
-                        <option v-for="(item, index) in yearSpan" :value="yearEnd-index" :key="index"
-                            :selected="(yearEnd-index)==yearDefault">
-                            {{yearEnd-index}}
-                        </option>
-                    </select>
-                    <!-- <span class="age_sure" @click="checkAge">确定</span> -->
+            <div id="block2" class="block" :style="{visibility: visibility2}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">您想为<span class="m_name">{{guest.for}}</span>购买什么样类型的保险呢？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <ul class="sel_box sel_box2">
+                        <li :class="{on: item.check}" v-for="(item, index) in insurance" :key="index"
+                            @click="checkInsurance(item, index)">
+                            <img :src="url+(index+1)+'.png'" alt="">
+                            <p>{{item.title}}</p>
+                        </li>
+                        <li>
+                            <div class="submit_btn" @click="_insurance">确定</div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div id="block5" class="block" :style="{visibility: visibility5}">
-            <div class="chat_block">
-                <img class="fl avatar" :src="adviser" alt="">
-                <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+            <div id="block3" class="block" :style="{visibility: visibility3}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">您<span class="m_name">{{guest.for}}</span>有社保吗？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all sel_box_3">
+                        <span data-data="1" :class="{active: socialIndex==1}" @click="checkSocial">有</span>
+                        <span data-data="0" :class="{active: socialIndex==0}" @click="checkSocial">没有</span>
+                    </div>
+                </div>
             </div>
-            <div class="chat_block">
-                <img class="fr avatar" :src="me" alt="">
-                <div class="sel_box fill_box">
-                    <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
-                    <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
-                    <div class="fill_msg">
-                        <select id="province" v-model="areaSelected" @change="areaChange">
-                            <option v-for="(item, index) in areaList" :value="item.province" :key="index">
-                                {{item.province}}
+            <div id="block4" class="block" :style="{visibility: visibility4}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请问您<span class="m_name">{{guest.for}}</span>的出生年份</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all sel_box_4">
+                        <select id="year" name="year" @Change="changeAge">
+                            <option value="">请选择</option>
+                            <option v-for="(item, index) in yearSpan" :value="yearEnd-index" :key="index"
+                                :selected="(yearEnd-index)==yearDefault">
+                                {{yearEnd-index}}
                             </option>
                         </select>
+                        <!-- <span class="age_sure" @click="checkAge">确定</span> -->
                     </div>
-                    <div class="fill_msg">
-                        <select id="city" v-model="citySelected" @change="cityChange">
-                            <option v-for="(item, index) in checkList" :value="item" :key="index">
+                </div>
+            </div>
+            <div id="block5" class="block" :style="{visibility: visibility5}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="sel_box fill_box">
+                        <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
+                        <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
+                        <div class="fill_msg">
+                            <select id="province" v-model="areaSelected" @change="areaChange">
+                                <option v-for="(item, index) in areaList" :value="item.province" :key="index">
+                                    {{item.province}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="fill_msg">
+                            <select id="city" v-model="citySelected" @change="cityChange">
+                                <option v-for="(item, index) in checkList" :value="item" :key="index">
+                                    {{item}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="sure" id="fll_sure" @click="submit_mobile">确定</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 车险 -->
+        <div class="car_block" v-if="showType==1">
+            <div id="car1" class="block">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请填写您的车牌号</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all">
+                        <div class="input_block">
+                            <input type="text" id="car_num" v-model="guest.car_num" maxlength="11" @change="carNumChange" placeholder="请输入您的车牌号" />
+                        </div>
+                        <span class="age_sure" @click="carCheck('number')">确定</span>
+                    </div>
+                </div>
+            </div>
+            <div id="car2" class="block" :style="{visibility: car_visibility2}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请填写您的车价</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all">
+                        <div class="input_block">
+                            <input type="tel" id="car_price" v-model="guest.car_price" maxlength="5" placeholder="您的车价(万元)" />
+                        </div>
+                        <span class="age_sure" @click="carCheck('price')">确定</span>
+                    </div>
+                </div>
+            </div>
+            <div id="car3" class="block" :style="{visibility: car_visibility3}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="sel_box fill_box">
+                        <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
+                        <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
+                        <div class="fill_msg">
+                            <select id="province" v-model="areaSelected" @change="areaChange">
+                                <option v-for="(item, index) in areaList" :value="item.province" :key="index">
+                                    {{item.province}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="fill_msg">
+                            <select id="city" v-model="citySelected" @change="cityChange">
+                                <option v-for="(item, index) in checkList" :value="item" :key="index">
+                                    {{item}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="sure" id="fll_sure" @click="car_submit">确定</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 理财 -->
+        <div class="cash_block" v-if="showType==2">
+            <div id="cash1" class="block">
+                <div class="chat_block"  @click="cash_submit">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请选择投入金额</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all">
+                        <div class="cashList_block">
+                            <div
+                                v-for="(item,i) in cashList"
+                                :key="i"
+                                :class="{on: cashIndex==i}"
+                                @click="cashChange(item,i)"
+                                >
                                 {{item}}
-                            </option>
-                        </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="sure" id="fll_sure" @click="submit_mobile">确定</div>
+                </div>
+            </div>
+            <div id="cash2" class="block" :style="{visibility: cash_visibility2}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请选择您的性别</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all">
+                        <div class="cashList_block">
+                            <div :class="{on: sexIndex==1}" @click="sexChange(1)">男</div>
+                            <div :class="{on: sexIndex==2}" @click="sexChange(2)">女</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cash3" class="block" :style="{visibility: cash_visibility3}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">请输入您的年龄</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="fr sel_box_all">
+                        <div class="input_block">
+                            <input type="tel" id="age" v-model="guest.age" maxlength="3" placeholder="请输入您的年龄" />
+                        </div>
+                        <span class="age_sure" @click="ageCheck">确定</span>
+                    </div>
+                </div>
+            </div>
+            <div id="cash4" class="block" :style="{visibility: cash_visibility4}">
+                <div class="chat_block">
+                    <img class="fl avatar" :src="adviser" alt="">
+                    <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+                </div>
+                <div class="chat_block">
+                    <img class="fr avatar" :src="me" alt="">
+                    <div class="sel_box fill_box">
+                        <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
+                        <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
+                        <div class="fill_msg">
+                            <select id="province" v-model="areaSelected" @change="areaChange">
+                                <option v-for="(item, index) in areaList" :value="item.province" :key="index">
+                                    {{item.province}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="fill_msg">
+                            <select id="city" v-model="citySelected" @change="cityChange">
+                                <option v-for="(item, index) in checkList" :value="item" :key="index">
+                                    {{item}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="sure" id="fll_sure" @click="cash_submit">确定</div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="block6" class="block" :style="{visibility: visibility6}">
+
+        <div class="block" v-show="showSuccess">
             <div class="chat_block">
                 <img class="fl avatar" :src="adviser" alt="">
                 <div class="fl ask_word">收到，我会尽快与您联系，请保持通讯畅通哦～</div>
             </div>
-            <!-- <div class="chat_block">
-                <img class="fr avatar" :src="me" alt="">
-                <div class="fr sel_box_all">
-                    <span class="good">好的</span>
-                </div>    
-            </div> -->
         </div>
+        
         <div class="fill" :style="fillHeight" v-show="showfill"></div>
         <!-- 移动端提示 -->
         <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
@@ -164,17 +327,29 @@
             guest: {},
             checkIndex: null,
             socialIndex: null,
+            cashIndex: null,
+            sexIndex: null,
             visibility2: 'hidden',
             visibility3: 'hidden',
             visibility4: 'hidden',
             visibility5: 'hidden',
             visibility6: 'hidden',
+            car_visibility1: 'hidden',
+            car_visibility2: 'hidden',
+            car_visibility3: 'hidden',
+            car_visibility4: 'hidden',
+            cash_visibility1: 'hidden',
+            cash_visibility2: 'hidden',
+            cash_visibility3: 'hidden',
+            cash_visibility4: 'hidden',
+            showType: null, // 显示保险页
             showfill: false,
             yearSpan: null, // 出生年份跨度
             yearStart: null,
             yearEnd: null,
             yearDefault: null,
             confimShow: false,
+            showSuccess: false,
             areaList: [],
             cityList: [],
             checkList: [],
@@ -183,8 +358,23 @@
             fillHeight: null,
             baseURL: 'http://server.yingku878.com/', //接口请求地址
             adviser: './landing_static/image/insurance_landing/adviser.png',
-            me: './landing_static/image/insurance_landing/me.png',
+            me: './landing_static/image/insurance_landing/mine.png',
             url: './landing_static/image/insurance_landing/pic',
+            cashList: ['1-2万','2-5万','5万以上'],
+            insuranceType: [
+                {
+                    avatar: './landing_static/image/insurance_landing/type_origin.png',
+                    title: '保险'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/type_car.png',
+                    title: '车险'
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/type_cash.png',
+                    title: '理财'
+                },
+            ],
             insurance: [{
                     title: '人寿险'
                 },
@@ -356,6 +546,12 @@
                     this.confimShow = false
                 }, setTiem)
             },
+            // 选中投保类型
+            checkType(index) {
+                this.showType = index
+                this.showSuccess = false
+                this.showfill = false
+            },
             // 选中投保人
             checkGuest(item, index) {
                 // console.log(item, index);
@@ -368,7 +564,7 @@
                 this.yearDefault = item.yearDefault
                 this.yearSpan = (item.yearEnd - item.yearStart)+1
                 this.showfill = true
-                this.showDetails(2)
+                this.showDetails('block',2)
             },
             // 选中保险
             checkInsurance(item, index) {
@@ -405,7 +601,7 @@
                     let str = newArr.join(',')
                     this.guest.buy_case = str
                     this.visibility3 = ''
-                    this.showDetails(3)
+                    this.showDetails('block',3)
                 } else {
                     this.showConfim('请至少选择一项保障需求')
                 }
@@ -416,7 +612,7 @@
                 index == 1 ? this.guest.has_social = '有' : this.guest.has_social = '没有'
                 this.socialIndex = index
                 this.visibility4 = ''
-                this.showDetails(4)
+                this.showDetails('block',4)
             },
             // 确认年龄
             checkAge() {
@@ -426,13 +622,13 @@
                     return false
                 }
                 this.visibility5 = ''
-                this.showDetails(5)
+                this.showDetails('block',5)
             },
             // 切换年龄监听
             changeAge(e) {
                 this.guest.birth = e.target.value
                 this.visibility5 = ''
-                this.showDetails(5)
+                this.showDetails('block',5)
             },
             // 切换省份
             areaChange(e) {
@@ -443,22 +639,200 @@
                 this.checkList = result.flat()
                 this.citySelected = this.checkList[0]
             },
-            // 市级下拉监听
-            cityChange(e) {
-                // console.log(e.target.value)
-            },
             // 点击翻页方法
-            showDetails(num) {
+            showDetails(type, num) {
+                console.log('shoDetails!');
                 // var el = document.getElementById(`block${num}`);
                 let height = document.documentElement.clientHeight // 整个页面高度
-                let topheight = $(`#block${num}`).offset().top; //dom距离顶部高度
-                let domHeight = $(`#block${num-1}`).height(); //上一个dom元素高度
-                let moveHeight = topheight - domHeight/2
+                let topheight = $(`#${type}${num}`).offset().top; //dom距离顶部高度
+                let domHeight = $(`#${type}${num-1}`).height(); //上一个dom元素高度
+                let moveHeight = topheight - domHeight/2 - height/4
                 // console.log(moveHeight);
                 $('html,body').animate({
                     scrollTop: moveHeight
                 }, 500);
                 this.fillHeight = `height:${height/2}px`
+            },
+             // 车险需求确认
+             carCheck(type) {
+                switch (type) {
+                    case 'number':
+                        if (!this.guest.car_num) {
+                            this.showConfim('请填写车牌号！')
+                            return false
+                        }
+                        this.showDetails('car',2)
+                        this.car_visibility2 = ''
+                        break;
+                    case 'price':
+                        if (!this.guest.car_price) {
+                            this.showConfim('请填写车价！')
+                            return false
+                        }
+                        this.showfill = true
+                        this.car_visibility3 = ''
+                        this.showDetails('car',3)
+                        
+                        break;
+                    default:
+                        break;
+                }
+            },
+            // 车牌号输入监听
+            carNumChange() {
+                console.log(111);
+            },
+            // 投保金额切换
+            cashChange(item, index) {
+                this.cashIndex = index
+                this.guest.invest_price = item
+                this.showDetails('cash',2)
+                this.cash_visibility2 = ''
+            },
+            // 性别切换
+            sexChange(index) {
+                this.sexIndex = index
+                index == 1 ? this.guest.sex = '男' : this.guest.sex = '女'
+                this.showDetails('cash',3)
+                this.cash_visibility3 = ''
+            },
+            //年龄确定
+            ageCheck() {
+                if (!this.guest.age) {
+                    this.showConfim('请输入年龄')
+                    return false
+                }
+                this.showDetails('cash',4)
+                this.cash_visibility4 = ''
+                this.showfill = true
+            },
+            // 市级下拉监听
+            cityChange(e) {
+                // console.log(e.target.value)
+            },
+            
+            // 表单提交
+            postFormData(obj) {
+                // this.showSuccess = true
+                // return false
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                        this.guest = {}
+                        setTimeout(() => {
+                            this.showSuccess = true
+                        }, 500)
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
+            },
+            // 车险表单提交
+            car_submit() {
+                if (!this.guest.car_num) {
+                    this.showConfim('请输入您的车牌号')
+                    return false
+                }
+                if (!this.guest.car_price) {
+                    this.showConfim('请输入您的车价')
+                    return false
+                }
+                if (!this.guest.name) {
+                    this.showConfim('请输入您的姓名')
+                    return false
+                }
+                if (!this.guest.tel) {
+                    this.showConfim('请输入您的电话')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.tel))) {
+                    this.showConfim('电话输入格式错误')
+                    return false
+                }
+                if (!this.areaSelected || this.areaSelected == '请选择省份') {
+                    this.showConfim('请选择省份')
+                    return false
+                }
+                if (!this.citySelected || this.citySelected == '请选择城市') {
+                    this.showConfim('请选择城市')
+                    return false
+                }
+                let obj = {
+                    name: this.guest.name,
+                    mobile: this.guest.tel,
+                    province: this.areaSelected,
+                    city: this.citySelected,
+                    car_num: this.guest.car_num,
+                    car_price: this.guest.car_price+'万元',
+                    birth: '',
+                    for: '',
+                    has_social: '没有',
+                    buy_case: '',
+                    insurance_type: this.insuranceType[this.showType].title,
+                    type: 21
+                }
+                this.postFormData(obj)
+            },
+            // 理财表单提交
+            cash_submit() {
+                if (!this.guest.invest_price) {
+                    this.showConfim('请选择投入金额')
+                    return false
+                }
+                if (!this.guest.sex) {
+                    this.showConfim('请选择性别')
+                    return false
+                }
+                if (!this.guest.age) {
+                    this.showConfim('请输入年龄')
+                    return false
+                }
+                if (!this.guest.name) {
+                    this.showConfim('请输入您的姓名')
+                    return false
+                }
+                if (!this.guest.tel) {
+                    this.showConfim('请输入您的电话')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.tel))) {
+                    this.showConfim('电话输入格式错误')
+                    return false
+                }
+                if (!this.areaSelected || this.areaSelected == '请选择省份') {
+                    this.showConfim('请选择省份')
+                    return false
+                }
+                if (!this.citySelected || this.citySelected == '请选择城市') {
+                    this.showConfim('请选择城市')
+                    return false
+                }
+                let obj = {
+                    name: this.guest.name,
+                    mobile: this.guest.tel,
+                    province: this.areaSelected,
+                    city: this.citySelected,
+                    invest_price: this.guest.invest_price,
+                    sex: this.guest.sex,
+                    age: 23,
+                    birth: '',
+                    for: '',
+                    has_social: '没有',
+                    buy_case: '',
+                    insurance_type: this.insuranceType[this.showType].title,
+                    type: 21
+                }
+                console.log(obj)
+                // this.showConfim('成功!')
+                // return false
+                this.postFormData(obj)
             },
             // 移动端表单提交
             submit_mobile() {
@@ -500,28 +874,12 @@
                     for: this.guest.for,
                     has_social: this.guest.has_social,
                     buy_case: this.guest.buy_case,
+                    insurance_type: this.insuranceType[this.showType].title,
                     type: 21
                 }
                 // console.log(obj)
                 // this.showConfim('成功!')
-                $.ajax({
-                    url: `${this.baseURL}?r=api/user/customer`,
-                    type: "post",
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    success: (res) => {
-                        // console.log(res)
-                        this.showConfim('提交成功')
-                        setTimeout(() => {
-                            this.visibility6 = ''
-                            this.showfill = false
-                        }, 500)
-                    },
-                    error: (errore) => {
-                        // console.log(errore);
-                    }
-                });
+                this.postFormData(obj)
             },
         }
     })
