@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <title>保险咨询</title>
+    <link rel="stylesheet" href="./landing_static/css/main.css?v=9">
+    <link rel="stylesheet" href="./landing_static/css/insurance_landing.css?v=12">
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div id="block1" class="block">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您好，我是保险顾问，很高兴能为您服务，请问您想为谁购买保险？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <ul class="sel_box">
+                    <li :class="{on: checkIndex == index}" v-for="(item, index) in people" :key="index"
+                        @click="checkGuest(item, index)">
+                        <img :src="item.avatar" alt="">
+                        <p>{{item.title}}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="block2" class="block" :style="{visibility: visibility2}">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您想为<span class="m_name">{{guest.for}}</span>购买什么样类型的保险呢？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <ul class="sel_box sel_box2">
+                    <li :class="{on: item.check}" v-for="(item, index) in insurance" :key="index"
+                        @click="checkInsurance(item, index)">
+                        <img :src="url+(index+1)+'.png'" alt="">
+                        <p>{{item.title}}</p>
+                    </li>
+                    <li>
+                        <div class="submit_btn" @click="_insurance">确定</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="block3" class="block" :style="{visibility: visibility3}">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">您<span class="m_name">{{guest.for}}</span>有社保吗？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all sel_box_3">
+                    <span data-data="1" :class="{active: socialIndex==1}" @click="checkSocial">有</span>
+                    <span data-data="0" :class="{active: socialIndex==0}" @click="checkSocial">没有</span>
+                </div>
+            </div>
+        </div>
+        <div id="block4" class="block" :style="{visibility: visibility4}">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">请问您<span class="m_name">{{guest.for}}</span>的出生年份</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all sel_box_4">
+                    <select id="year" name="year" @Change="changeAge">
+                        <option value="">请选择</option>
+                        <option v-for="(item, index) in yearSpan" :value="yearEnd-index" :key="index"
+                            :selected="(yearEnd-index)==yearDefault">
+                            {{yearEnd-index}}
+                        </option>
+                    </select>
+                    <!-- <span class="age_sure" @click="checkAge">确定</span> -->
+                </div>
+            </div>
+        </div>
+        <div id="block5" class="block" :style="{visibility: visibility5}">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <p class="fl ask_word">好的，那我应该如何与您联系？</p>
+            </div>
+            <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="sel_box fill_box">
+                    <div class="fill_msg"><input type="text" id="name" v-model="guest.name" placeholder="姓名" /></div>
+                    <div class="fill_msg"><input type="tel" id="tel" v-model="guest.tel" placeholder="电话" /></div>
+                    <div class="fill_msg">
+                        <select id="province" v-model="areaSelected" @change="areaChange">
+                            <option v-for="(item, index) in areaList" :value="item.province" :key="index">
+                                {{item.province}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="fill_msg">
+                        <select id="city" v-model="citySelected" @change="cityChange">
+                            <option v-for="(item, index) in checkList" :value="item" :key="index">
+                                {{item}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="sure" id="fll_sure" @click="submit_mobile">确定</div>
+                </div>
+            </div>
+        </div>
+        <div id="block6" class="block" :style="{visibility: visibility6}">
+            <div class="chat_block">
+                <img class="fl avatar" :src="adviser" alt="">
+                <div class="fl ask_word">收到，我会尽快与您联系，请保持通讯畅通哦～</div>
+            </div>
+            <!-- <div class="chat_block">
+                <img class="fr avatar" :src="me" alt="">
+                <div class="fr sel_box_all">
+                    <span class="good">好的</span>
+                </div>    
+            </div> -->
+        </div>
+        <div class="fill" :style="fillHeight" v-show="showfill"></div>
+        <!-- 移动端提示 -->
+        <div class="confim_block" v-if="confimShow">{{confim_text}}</div>
+        <div class="copyright">
+            <p>*您提供的信息我们将严格保密，请放心填写！</p>
+            <p>武汉市君询信息咨询有限公司</p>
+        </div>
+    </div>
+    <!-- 第三方定位 -->
+    <iframe id="geoPage" width=0 height=0 frameborder=0 style="display:none;" scrolling="no"
+        src="https://apis.map.qq.com/tools/geolocation?key=ST4BZ-6N26P-VIKD6-LPJJN-SLMK5-RCFQM&referer=搜搜地图"></iframe>
+</body>
+
+<script src="./landing_static/js/vue.min.js"></script>
+<script src="./landing_static/js/jQuery.js"></script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?24a6f274483cf1778e5dbe1fe669f221";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d50a4f2d96fa65188ec440607894cfb5";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            guest: {},
+            checkIndex: null,
+            socialIndex: null,
+            visibility2: 'hidden',
+            visibility3: 'hidden',
+            visibility4: 'hidden',
+            visibility5: 'hidden',
+            visibility6: 'hidden',
+            showfill: false,
+            yearSpan: null, // 出生年份跨度
+            yearStart: null,
+            yearEnd: null,
+            yearDefault: null,
+            confimShow: false,
+            areaList: [],
+            cityList: [],
+            checkList: [],
+            areaSelected: null,
+            citySelected: null,
+            fillHeight: null,
+            baseURL: 'http://ztc1.st712.com', //接口请求地址
+            adviser: './landing_static/image/insurance_landing/adviser.png',
+            me: './landing_static/image/insurance_landing/me.png',
+            url: './landing_static/image/insurance_landing/pic',
+            insurance: [{
+                    title: '人寿险'
+                },
+                {
+                    title: '健康险'
+                },
+                {
+                    title: '意外险'
+                },
+                {
+                    title: '财产险'
+                },
+                {
+                    title: '旅游险'
+                },
+            ],
+            people: [{
+                    avatar: './landing_static/image/insurance_landing/me.png',
+                    title: '自己',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/husband.png',
+                    title: '丈夫',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/wife.png',
+                    title: '妻子',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/father.png',
+                    title: '父亲',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/mother.png',
+                    title: '母亲',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/daughter.png',
+                    title: '女儿',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+                {
+                    avatar: './landing_static/image/insurance_landing/son.png',
+                    title: '儿子',
+                    yearSpan: 60,
+                    yearStart: 1950,
+                    yearEnd: 2020,
+                    // yearDefault: 1985
+                },
+            ],
+        },
+        created() {
+            this.getFlat()
+        },
+        mounted() {
+            this.getCity()
+            this.getAreaList()
+        },
+        methods: {
+            // flat兼容
+            getFlat() {
+                // 兼容ie数组没有flat方法
+                if (!Array.prototype.flat) {
+                    Array.prototype.flat = function (count) {
+                        let c = count || 1;
+                        let len = this.length;
+                        let exe = [];
+                        if (this.length == 0) return this;
+                        while (c--) {
+                            let _arr = [];
+                            let flag = false;
+                            if (exe.length == 0) {
+                                flag = true;
+                                for (let i = 0; i < len; i++) {
+                                    if (this[i] instanceof Array) {
+                                        exe.push(...this[i]);
+                                    } else {
+                                        exe.push(this[i]);
+                                    }
+                                }
+                            } else {
+                                for (let i = 0; i < exe.length; i++) {
+                                    if (exe[i] instanceof Array) {
+                                        flag = true;
+                                        _arr.push(...exe[i]);
+                                    } else {
+                                        _arr.push(exe[i]);
+                                    }
+                                }
+                                exe = _arr;
+                            }
+                            if (!flag && c == Infinity) {
+                                break;
+                            }
+                        }
+                        return exe;
+                    };
+                }
+            },
+            // 获取省市
+            getCity() {
+                this.sendAddress().then(result => {
+                    this.areaSelected = result.province.split('省')[0]
+                    if (this.areaSelected) {
+                        let index = this.areaList.findIndex(item => item.province == this.areaSelected)
+                        let result = this.cityList.filter((v, i) => i == index)
+                        result.unshift('请选择城市')
+                        this.checkList = result.flat()
+                        this.citySelected = this.checkList[0]
+                    }
+                    // this.guest.city = result.city.split('市')[0]
+                })
+            },
+            // 第三方获取城市传值
+            async sendAddress() {
+                return new Promise(resolve => {
+                    window.addEventListener('message', function (event) {
+                        var loc = event.data;
+                        loc ? resolve(loc) : false
+                    }, false);
+                })
+            },
+            // 获取省市
+            getAreaList() {
+                $.post(`${this.baseURL}?r=api/index/district`, {}, res => {
+                    if (res.code === 200) {
+                        this.areaList = res.data
+                        this.areaList.unshift({
+                            province: '请选择省份'
+                        })
+                        this.checkList.unshift('请选择城市')
+                        this.areaList.forEach(item => {
+                            this.cityList.push(item.city)
+                        })
+                        this.areaSelected = this.areaList[0].province
+                        this.citySelected = this.checkList[0]
+                    }
+                })
+            },
+            //显示提示框
+            showConfim(text, time) {
+                let setTiem = time || 850
+                this.confim_text = text
+                this.confimShow = true
+                setTimeout(() => {
+                    this.confimShow = false
+                }, setTiem)
+            },
+            // 选中投保人
+            checkGuest(item, index) {
+                // console.log(item, index);
+                this.checkIndex = index
+                this.guest.for = item.title
+                this.visibility2 = ''
+                // this.yearSpan = item.yearSpan
+                this.yearStart = item.yearStart
+                this.yearEnd = item.yearEnd
+                this.yearDefault = item.yearDefault
+                this.yearSpan = (item.yearEnd - item.yearStart)+1
+                this.showfill = true
+                this.showDetails(2)
+            },
+            // 选中保险
+            checkInsurance(item, index) {
+                // console.log(item, index);
+                if (item.hasOwnProperty('check')) {
+                    this.$delete(item, 'check')
+                } else {
+                    this.$set(item, 'check', 1)
+                }
+                let result = this.insurance.filter(item => {
+                    return item.check
+                })
+                if (result.length) {
+                    let newArr = []
+                    result.forEach(item => {
+                        newArr.push(item.title)
+                    })
+                    let str = newArr.join(',')
+                    this.guest.buy_case = str
+                } else {
+                    this.guest.buy_case = null
+                }
+            },
+            // 确认保险
+            _insurance() {
+                let result = this.insurance.filter(item => {
+                    return item.check
+                })
+                if (result.length) {
+                    let newArr = []
+                    result.forEach(item => {
+                        newArr.push(item.title)
+                    })
+                    let str = newArr.join(',')
+                    this.guest.buy_case = str
+                    this.visibility3 = ''
+                    this.showDetails(3)
+                } else {
+                    this.showConfim('请至少选择一项保障需求')
+                }
+            },
+            // 是否有社保
+            checkSocial(e) {
+                let index = e.target.dataset.data
+                index == 1 ? this.guest.has_social = '有' : this.guest.has_social = '没有'
+                this.socialIndex = index
+                this.visibility4 = ''
+                this.showDetails(4)
+            },
+            // 确认年龄
+            checkAge() {
+                let birth = this.guest.birth
+                if(!birth || birth == '请选择')  {
+                    this.showConfim('请输入年龄')
+                    return false
+                }
+                this.visibility5 = ''
+                this.showDetails(5)
+            },
+            // 切换年龄监听
+            changeAge(e) {
+                this.guest.birth = e.target.value
+                this.visibility5 = ''
+                this.showDetails(5)
+            },
+            // 切换省份
+            areaChange(e) {
+                let value = e.target.value
+                let index = this.areaList.findIndex(item => item.province == value)
+                let result = this.cityList.filter((v, i) => i == index)
+                result.unshift('请选择城市')
+                this.checkList = result.flat()
+                this.citySelected = this.checkList[0]
+            },
+            // 市级下拉监听
+            cityChange(e) {
+                // console.log(e.target.value)
+            },
+            // 点击翻页方法
+            showDetails(num) {
+                // var el = document.getElementById(`block${num}`);
+                let height = document.documentElement.clientHeight // 整个页面高度
+                let topheight = $(`#block${num}`).offset().top; //dom距离顶部高度
+                let domHeight = $(`#block${num-1}`).height(); //上一个dom元素高度
+                let moveHeight = topheight - domHeight/2
+                // console.log(moveHeight);
+                $('html,body').animate({
+                    scrollTop: moveHeight
+                }, 500);
+                this.fillHeight = `height:${height/2}px`
+            },
+            // 移动端表单提交
+            submit_mobile() {
+                let birth = this.guest.birth
+                if (!this.guest.buy_case) {
+                    this.showConfim('请至少选择一项保障需求')
+                    return false
+                }
+                if(!birth || birth == '请选择')  {
+                    this.showConfim('请输入年龄')
+                    return false
+                }
+                if (!this.guest.name) {
+                    this.showConfim('请输入您的姓名')
+                    return false
+                }
+                if (!this.guest.tel) {
+                    this.showConfim('请输入您的电话')
+                    return false
+                }
+                if (!(/^1[3456789]\d{9}$/.test(this.guest.tel))) {
+                    this.showConfim('电话输入格式错误')
+                    return false
+                }
+                if (!this.areaSelected || this.areaSelected == '请选择省份') {
+                    this.showConfim('请选择省份')
+                    return false
+                }
+                if (!this.citySelected || this.citySelected == '请选择城市') {
+                    this.showConfim('请选择城市')
+                    return false
+                }
+                let obj = {
+                    name: this.guest.name,
+                    mobile: this.guest.tel,
+                    province: this.areaSelected,
+                    city: this.citySelected,
+                    birth: this.guest.birth,
+                    for: this.guest.for,
+                    has_social: this.guest.has_social,
+                    buy_case: this.guest.buy_case,
+                    type: 21
+                }
+                // console.log(obj)
+                // this.showConfim('成功!')
+                $.ajax({
+                    url: `${this.baseURL}?r=api/user/customer`,
+                    type: "post",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    success: (res) => {
+                        // console.log(res)
+                        this.showConfim('提交成功')
+                        setTimeout(() => {
+                            this.visibility6 = ''
+                            this.showfill = false
+                        }, 500)
+                    },
+                    error: (errore) => {
+                        // console.log(errore);
+                    }
+                });
+            },
+        }
+    })
+</script>
+
+</html>
