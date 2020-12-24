@@ -141,8 +141,9 @@ input::-webkit-input-placeholder {
 
 .chat_block .type_box li p {
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 .chat_block .sel_box {
